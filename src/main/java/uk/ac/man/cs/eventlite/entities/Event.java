@@ -3,9 +3,15 @@ package uk.ac.man.cs.eventlite.entities;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+@Table(name = "events")
 
 public class Event {
 
