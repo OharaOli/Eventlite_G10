@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
+import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Component
 @Profile({ "default", "test" })
@@ -25,13 +27,21 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-
-		if (eventService.count() > 0) {
+		
+		if (venueService.count() == 0) {
+			Venue newVenue = new Venue();
+			//newVenue.setId(1) ;
+			newVenue.setName("Venue");
+			newVenue.setCapacity(5);
+			
+			venueService.save(newVenue);
+		}
+		else
+		{
 			log.info("Database already populated. Skipping data initialization.");
-			return;
+
 		}
 
-		// Build and save initial models here.
-
+		
 	}
 }
