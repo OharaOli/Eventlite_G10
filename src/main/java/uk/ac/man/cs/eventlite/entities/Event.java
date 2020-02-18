@@ -1,4 +1,7 @@
 package uk.ac.man.cs.eventlite.entities;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,7 +17,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Table(name = "events")
 
 public class Event {
-
+    
+	@Id
+	@GeneratedValue
 	private long id;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING)

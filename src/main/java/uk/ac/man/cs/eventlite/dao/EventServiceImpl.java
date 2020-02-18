@@ -30,7 +30,13 @@ public class EventServiceImpl implements EventService {
 	public long count() {
 		return eventRepository.count();
 	}
-
+	
+	@Override
+    public Event save(Event event)
+    {
+		return eventRepository.save(event);
+    }
+	
 	@Override
 	public Iterable<Event> findAll() {
 		return eventRepository.findAll();
