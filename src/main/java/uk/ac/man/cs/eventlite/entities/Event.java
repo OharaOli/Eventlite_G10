@@ -2,6 +2,8 @@ package uk.ac.man.cs.eventlite.entities;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,7 +34,9 @@ public class Event {
 
 	private String name;
 
-	private long venue;
+	@ManyToOne
+	@JoinColumn(name="id")
+	private Venue venue;
 
 	public Event() {
 	}
@@ -69,11 +73,11 @@ public class Event {
 		this.name = name;
 	}
 
-	public long getVenue() {
+	public Venue getVenue() {
 		return venue;
 	}
 
-	public void setVenue(long venue) {
+	public void setVenue(Venue venue) {
 		this.venue = venue;
 	}
 }
