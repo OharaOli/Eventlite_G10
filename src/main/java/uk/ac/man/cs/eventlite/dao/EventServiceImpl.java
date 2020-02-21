@@ -9,10 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.data.domain.Sort;
 
 import uk.ac.man.cs.eventlite.entities.Event;
 
@@ -39,6 +41,13 @@ public class EventServiceImpl implements EventService {
 	
 	@Override
 	public Iterable<Event> findAll() {
-		return eventRepository.findAll();
+		Sort sort = Sort.by(
+			Sort.Order.asc("date"),
+			Sort.Order.asc("time"));
+			return eventRepository.findAll(sort);
+			
+			
+		}
+		
 	}
-}
+
