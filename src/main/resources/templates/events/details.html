@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Information About This Event</title>
+</head>
+<body>
+	<div layout:fragment="content" >	
+	  <section th:if="${event.isPresent()}">
+	    <h1 th:text="${event.get().getName()}">Event Name</h1>
+	    <p><i>Details about this event:</i></p>
+		<ul style="list-style-type:disc;">
+		  <li th:text="${'Venue: ' + event.get().getVenue().getName()}">Event Venue</li>
+		  <li th:text="${'Date: ' + event.get().date}">Event Date</li>
+		  <li th:text="${'Time: ' + event.get().time}">Event Time</li>
+		  <li th:if="${event.get().getDescription()} != ''" th:text="${'Description: ' + event.get().getDescription()}"}>
+		  	Event Description</li>
+		  <li th:unless="${event.get().getDescription()} != ''">No description available.</li>
+		</ul>
+	  </section>
+	  <section th:unless="${event.isPresent()}">
+	    <h1>Sorry</h1>
+	    <p>The event is not found.</p>
+	  </section>
+      <footer th:fragment="copy">
+	    &copy; 2020 G10
+	  </footer>
+	</div>
+</body>
+</html>

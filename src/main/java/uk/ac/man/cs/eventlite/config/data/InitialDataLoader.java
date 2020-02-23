@@ -50,6 +50,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			newEvent1.setVenue(newVenue1);
 			newEvent1.setDate(date1);
 			newEvent1.setTime(time1);
+			newEvent1.setDescription("Description for Test Event 1.");
 			eventService.save(newEvent1);
 			
 			Event newEvent2 = new Event();
@@ -57,6 +58,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			newEvent2.setVenue(newVenue1);
 			newEvent2.setDate(date1);
 			newEvent2.setTime(time2);
+			newEvent2.setDescription("Description for Test Event 2.");
 			eventService.save(newEvent2);
 			
 			Event newEvent3 = new Event();
@@ -64,6 +66,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			newEvent3.setVenue(newVenue1);
 			newEvent3.setDate(date2);
 			newEvent3.setTime(time1);
+			newEvent3.setDescription("");
 			eventService.save(newEvent3);
 			
 		}
