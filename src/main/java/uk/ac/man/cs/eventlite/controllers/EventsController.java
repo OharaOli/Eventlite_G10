@@ -6,9 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
-import uk.ac.man.cs.eventlite.dao.VenueService;
 
 @Controller
 @RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
@@ -27,6 +27,13 @@ public class EventsController {
 		//model.addAttribute("venues", venueService.findAll());
 
 		return "events/index";
+	}
+	
+	@RequestMapping(value = "/delete_event", method = RequestMethod.GET)
+	public String handleDeleteEvent(@RequestParam(name="eventId") Long id) {
+		eventService.deleteById(id) ;
+		
+		return "events/index" ;
 	}
 
 }

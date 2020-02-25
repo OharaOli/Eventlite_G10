@@ -9,4 +9,6 @@ public interface EventService {
 	public Event save(Event event);
 
 	public Iterable<Event> findAll();
+	
+	public void deleteById(Long id);
 }
