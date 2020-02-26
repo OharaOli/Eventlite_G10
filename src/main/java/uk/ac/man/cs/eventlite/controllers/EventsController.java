@@ -31,7 +31,8 @@ public class EventsController {
 	
 	@RequestMapping(value = "/delete_event", method = RequestMethod.GET)
 	public String handleDeleteEvent(@RequestParam(name="eventId") Long id) {
-		eventService.deleteById(id) ;
+		if (eventService.findById(id).isPresent())
+		  eventService.deleteById(id) ;
 		
 		return "events/index" ;
 	}
