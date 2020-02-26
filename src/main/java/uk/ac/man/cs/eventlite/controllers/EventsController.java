@@ -34,7 +34,7 @@ public class EventsController {
 		if (eventService.findById(id).isPresent())
 		  eventService.deleteById(id) ;
 		
-		return "events/index" ;
+		return "redirect:" ;
 	}
 
 }
