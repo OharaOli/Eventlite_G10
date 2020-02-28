@@ -29,6 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import uk.ac.man.cs.eventlite.EventLite;
 import uk.ac.man.cs.eventlite.dao.EventService;
@@ -96,5 +97,29 @@ public class EventsControllerTest {
 //		verify(venueService).findAll();
 		verifyZeroInteractions(event);
 //		verifyZeroInteractions(venue);
+	}
+	
+	@Test
+	public void getSearchIndexWhenNoEvents() throws Exception {
+		String testSearch = new String("HHH");
+		when(eventService.findSearchedBy(testSearch)).thenReturn(Collections.<Event> emptyList());
+
+		mvc.perform(get("/events/search?search=HHH").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("events/search")).andExpect(handler().methodName("getEventsByName"));
+
+		verify(eventService).findSearchedBy(testSearch);
+		verifyZeroInteractions(event);
+	}
+
+	@Test
+	public void getSearchIndexWithEvents() throws Exception {
+		String eventSearch = new String("Event");
+		when(eventService.findSearchedBy(eventSearch)).thenReturn(Collections.<Event> singletonList(event));
+
+		mvc.perform(get("/events/search?search=Event").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("events/search")).andExpect(handler().methodName("getEventsByName"));
+
+		verify(eventService).findSearchedBy(eventSearch);
+		verifyZeroInteractions(event);
 	}
 }

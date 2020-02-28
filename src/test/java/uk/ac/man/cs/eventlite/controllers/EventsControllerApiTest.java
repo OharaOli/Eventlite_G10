@@ -93,4 +93,36 @@ public class EventsControllerApiTest {
 
 		verify(eventService).findAll();
 	}
+	
+	@Test
+	public void getSearchIndexWhenNoEvents() throws Exception {
+		String testSearch = new String("HHH");
+		when(eventService.findSearchedBy(testSearch)).thenReturn(Collections.<Event> emptyList());
+
+		mvc.perform(get("/api/events/search?search=HHH").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(handler().methodName("getEventsByName")).andExpect(jsonPath("$.length()", equalTo(1)))
+				.andExpect(jsonPath("$._links.self.href", endsWith("/api/events")));
+
+		verify(eventService).findSearchedBy(testSearch);
+	}
+
+	@Test
+	public void getSearchIndexWithEvents() throws Exception {
+		String testSearch = new String("event");
+		Event e = new Event();
+		Venue v = new Venue();
+		e.setId(0);
+		e.setName("My Test Event");
+		e.setDate(LocalDate.now());
+		e.setTime(LocalTime.now());
+		e.setVenue(v);
+		when(eventService.findSearchedBy(testSearch)).thenReturn(Collections.<Event>singletonList(e));
+
+		mvc.perform(get("/api/events/search?search=event").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(handler().methodName("getEventsByName")).andExpect(jsonPath("$.length()", equalTo(2)))
+				.andExpect(jsonPath("$._links.self.href", endsWith("/api/events")))
+				.andExpect(jsonPath("$._embedded.events.length()", equalTo(1)));
+
+		verify(eventService).findSearchedBy(testSearch);
+	}
 }
