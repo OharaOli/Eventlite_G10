@@ -12,8 +12,10 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
@@ -32,6 +34,13 @@ public class EventsControllerApi {
 		return eventToResource(eventService.findAll());
 	}
 
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	public Resources<Resource<Event>> getEventsByName(@RequestParam(value = "search", defaultValue = "") String eventSearch)
+	{
+		return eventToResource(eventService.findSearchedBy(eventSearch));
+	}
+	
+	
 	private Resource<Event> eventToResource(Event event) {
 		Link selfLink = linkTo(EventsControllerApi.class).slash(event.getId()).withSelfRel();
 

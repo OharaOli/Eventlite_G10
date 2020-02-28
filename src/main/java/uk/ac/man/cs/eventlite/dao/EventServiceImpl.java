@@ -32,6 +32,11 @@ public class EventServiceImpl implements EventService {
 	public Iterable<Event> findAll() {
 			return eventRepository.findByIdIsNotNullOrderByDateAscTimeAsc();
 	} // findAll
+	
+	@Override
+	public Iterable<Event> findSearchedBy(String search){
+		return eventRepository.findAllByNameContainsIgnoreCase(search);
+	}
 		
 }
 
