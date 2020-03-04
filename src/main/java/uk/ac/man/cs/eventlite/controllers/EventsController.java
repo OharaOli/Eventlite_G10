@@ -25,7 +25,8 @@ public class EventsController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String getAllEvents(Model model) {
-		model.addAttribute("events", eventService.findAll());
+		model.addAttribute("prevEvents", eventService.findAllPreviousEvents());
+		model.addAttribute("futureEvents", eventService.findAllFutureEvents());
 		return "events/index";
 	}
 
@@ -34,8 +35,10 @@ public class EventsController {
 	{
 		if(eventSearch == null || eventSearch.isEmpty())
 			return "redirect:/events";
-		Iterable<Event> eventResults = eventService.findSearchedBy(eventSearch);
-		model.addAttribute("eventResults", eventResults);
+		Iterable<Event> eventResultsFuture = eventService.findFutureSearchedBy(eventSearch);
+		Iterable<Event> eventResultsPast = eventService.findPastSearchedBy(eventSearch);
+		model.addAttribute("eventResultsFuture", eventResultsFuture);
+		model.addAttribute("eventResultsPast", eventResultsPast);
 		return "events/search";
 	}
 

@@ -39,7 +39,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			newVenue1.setCapacity(100);
 			venueService.save(newVenue1);
 			
-			LocalDate date1 = LocalDate.of(2020, 02, 21);
+			LocalDate date1 = LocalDate.of(2020, 8, 21);
 			LocalDate date2 = LocalDate.of(2020, 02, 22);
 			
 			LocalTime time1 = LocalTime.of(9, 30);
