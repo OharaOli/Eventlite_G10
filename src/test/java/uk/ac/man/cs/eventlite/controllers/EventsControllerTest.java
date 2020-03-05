@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.servlet.Filter;
 
@@ -100,6 +101,7 @@ public class EventsControllerTest {
 	}
 	
 	@Test
+
 	public void getSearchIndexWhenNoEvents() throws Exception {
 		String testSearch = new String("HHH");
 		when(eventService.findSearchedBy(testSearch)).thenReturn(Collections.<Event> emptyList());
@@ -122,4 +124,34 @@ public class EventsControllerTest {
 		verify(eventService).findSearchedBy(eventSearch);
 		verifyZeroInteractions(event);
 	}
+
+	public void getValidEventDetails() throws Exception {
+		Optional<Event> testEvent = Optional.of(event);
+		Long id = (long)1;
+		
+		when(eventService.findEventById(id)).thenReturn(testEvent);
+		
+		mvc.perform(get("/events/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("events/details")).andExpect(handler().methodName("getOneEvent"));
+		
+		verify(eventService).findEventById(id);
+		verifyZeroInteractions(eventService);
+		verifyZeroInteractions(event);
+	}
+	
+	@Test
+	public void getInvalidEventDetails() throws Exception {
+		Optional<Event> testEvent = Optional.<Event>empty();
+		Long id = (long)0;
+		
+		when(eventService.findEventById(id)).thenReturn(testEvent);
+		
+		mvc.perform(get("/events/0").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("events/details")).andExpect(handler().methodName("getOneEvent"));
+		
+		verify(eventService).findEventById(id);
+		verifyZeroInteractions(eventService);
+		verifyZeroInteractions(event);			
+	}
+	
 }

@@ -1,5 +1,7 @@
 package uk.ac.man.cs.eventlite.dao;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,11 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public Iterable<Event> findSearchedBy(String search){
 		return eventRepository.findAllByNameContainsIgnoreCase(search);
+	}
+		
+	@Override
+	public Optional<Event> findEventById(Long id) {
+		return eventRepository.findById(id);
 	}
 		
 }

@@ -12,5 +12,8 @@ public interface EventService {
 
 	public Iterable<Event> findAll();
 	
+
 	public Iterable<Event> findSearchedBy(String search);
+	public Optional<Event> findEventById(Long id);
+
 }
