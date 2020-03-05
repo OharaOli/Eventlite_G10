@@ -28,5 +28,14 @@ public class EventsController {
 
 		return "events/index";
 	}
+	
+	@RequestMapping(value = "/add",method = RequestMethod.GET)
+	public String getAddEvents(Model model) {
+
+		model.addAttribute("events", eventService.findAll());
+		//model.addAttribute("venues", venueService.findAll());
+
+		return "events/add/index";
+	}
 
 }
