@@ -34,40 +34,112 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		
 		if (venueService.count() == 0 || eventService.count() == 0) {
 			
-			Venue newVenue1 = new Venue() ;
-			newVenue1.setName("Test Venue 1");
-			newVenue1.setCapacity(100);
-			venueService.save(newVenue1);
+			Venue venueA = new Venue() ;
+			venueA.setName("Venue A");
+			venueA.setCapacity(100);
+			venueService.save(venueA);
 			
-			LocalDate date1 = LocalDate.of(2020, 02, 21);
-			LocalDate date2 = LocalDate.of(2020, 02, 22);
+			Venue venueB = new Venue() ;
+			venueB.setName("Venue B");
+			venueB.setCapacity(100);
+			venueService.save(venueB);
 			
-			LocalTime time1 = LocalTime.of(9, 30);
-			LocalTime time2 = LocalTime.of(9, 31);
+			Venue venueC = new Venue() ;
+			venueC.setName("Venue C");
+			venueC.setCapacity(100);
+			venueService.save(venueC);
 			
-			Event newEvent1 = new Event();
-			newEvent1.setName("Test Event 1");
-			newEvent1.setVenue(newVenue1);
-			newEvent1.setDate(date1);
-			newEvent1.setTime(time1);
-			newEvent1.setDescription("Description for Test Event 1.");
-			eventService.save(newEvent1);
+			LocalDate date1 = LocalDate.of(2017, 07, 11);
+			LocalDate date2 = LocalDate.of(2017, 07, 12);
+			LocalDate date3 = LocalDate.of(2019, 01, 01);
+			LocalDate date4 = LocalDate.of(2019, 02, 02);
+			LocalDate date5 = LocalDate.of(2019, 03, 03);
+			LocalDate date6 = LocalDate.of(2019, 04, 21);
+			LocalDate date7 = LocalDate.of(2019, 05, 30);
+			LocalDate date8 = LocalDate.of(2019, 8, 13);
 			
-			Event newEvent2 = new Event();
-			newEvent2.setName("Test Event 2");
-			newEvent2.setVenue(newVenue1);
-			newEvent2.setDate(date1);
-			newEvent2.setTime(time2);
-			newEvent2.setDescription("Description for Test Event 2.");
-			eventService.save(newEvent2);
+			LocalTime time1 = LocalTime.of(12, 30);
+			LocalTime time2 = LocalTime.of(18, 30);
 			
-			Event newEvent3 = new Event();
-			newEvent3.setName("Test Event 3");
-			newEvent3.setVenue(newVenue1);
-			newEvent3.setDate(date2);
-			newEvent3.setTime(time1);
-			newEvent3.setDescription("");
-			eventService.save(newEvent3);
+			// Example event 1.
+			Event event1 = new Event();
+			event1.setName("Event Apple");
+			event1.setDate(date2);
+			event1.setVenue(venueA);
+			event1.setDescription("Event Apple will be host to some of the world’s best iOS developers...");
+			eventService.save(event1);
+			
+			// Example event 2.
+			Event event2 = new Event();
+			event2.setName("Event Alpha");
+			event2.setDate(date1);
+			event2.setTime(time1);
+			event2.setVenue(venueB);
+			event2.setDescription("Event Alpha is the first of its kind...");
+			eventService.save(event2);
+			
+			// Example event 3.
+			Event event3 = new Event();
+			event3.setName("Event Previous");
+			event3.setVenue(venueA);
+			event3.setDate(date1);
+			event3.setTime(time2);
+			event3.setDescription("");
+			eventService.save(event3);
+
+			// Test event 1.
+			Event testEvent1 = new Event();
+			testEvent1.setName("Test Event 1");
+			testEvent1.setVenue(venueC);
+			testEvent1.setDate(date3);
+			testEvent1.setTime(time1);
+			testEvent1.setDescription("Test Event 1...");
+			eventService.save(testEvent1);
+			
+			// Test event 2.
+			Event testEvent2 = new Event();
+			testEvent2.setName("Test Event 2");
+			testEvent2.setVenue(venueC);
+			testEvent2.setDate(date4);
+			testEvent2.setTime(time1);
+			testEvent2.setDescription("Test Event 2...");
+			eventService.save(testEvent2);		
+			
+			// Test event 3.
+			Event testEvent3 = new Event();
+			testEvent3.setName("Test Event 3");
+			testEvent3.setVenue(venueC);
+			testEvent3.setDate(date5);
+			testEvent3.setTime(time1);
+			testEvent3.setDescription("Test Event 3...");
+			eventService.save(testEvent3);	
+			
+			// Test event 4.
+			Event testEvent4 = new Event();
+			testEvent4.setName("Test Event 4");
+			testEvent4.setVenue(venueC);
+			testEvent4.setDate(date6);
+			testEvent4.setTime(time1);
+			testEvent4.setDescription("Test Event 4...");
+			eventService.save(testEvent4);
+			
+			// Test event 5.
+			Event testEvent5 = new Event();
+			testEvent5.setName("Test Event 5");
+			testEvent5.setVenue(venueC);
+			testEvent5.setDate(date7);
+			testEvent5.setTime(time1);
+			testEvent5.setDescription("Test Event 5...");
+			eventService.save(testEvent5);		
+			
+			// Test event 6.
+			Event testEvent6 = new Event();
+			testEvent6.setName("Test Event 6");
+			testEvent6.setVenue(venueC);
+			testEvent6.setDate(date8);
+			testEvent6.setTime(time1);
+			testEvent6.setDescription("Test Event 6...");
+			eventService.save(testEvent6);	
 			
 		}
 		else
