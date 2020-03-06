@@ -36,6 +36,12 @@
 	    <span th:if="${event.get().getDescription()} != ''" th:text="${event.get().getDescription()}"}>Event Description</span><br>
 	  </section>
 	  
+	  <br>
+	  
+	  	<div sec:authorize="isAuthenticated()">
+		    <a th:href="@{/events/delete_event(eventId=${event.get().getId()})}" class="btn btn-danger">Delete</a>
+		</div>
+	  
 	  <!-- Code for personal design
 	  
 		<h1 th:text="${event.get().getName()}">Information About This Event</h1>

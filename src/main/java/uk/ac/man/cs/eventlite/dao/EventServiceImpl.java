@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.dao;
 
 import java.util.Optional;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,15 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public Optional<Event> findEventById(Long id) {
 		return eventRepository.findById(id);
+	}
+
+	public void deleteById(Long id) {
+		eventRepository.deleteById(id) ;
+	}
+	
+	@Override
+	public Optional<Event> findById(Long id) {
+		return eventRepository.findById(id) ;
 	}
 		
 }

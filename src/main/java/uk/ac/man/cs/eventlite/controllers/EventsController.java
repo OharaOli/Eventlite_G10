@@ -30,6 +30,14 @@ public class EventsController {
 		model.addAttribute("futureEvents", eventService.findAllFutureEvents());
 		return "events/index";
 	}
+	
+	@RequestMapping(value = "/delete_event", method = RequestMethod.GET)
+	public String handleDeleteEvent(@RequestParam(name="eventId") Long id) {
+		if (eventService.findById(id).isPresent())
+		  eventService.deleteById(id) ;
+		
+		return "redirect:" ;
+	}
 
 	@RequestMapping(value="/search", method = RequestMethod.GET)
 	public String getEventsByName(@RequestParam(value = "search") String eventSearch, Model model)
