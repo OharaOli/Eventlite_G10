@@ -52,12 +52,12 @@ public class EventServiceImpl implements EventService {
 	
 	@Override
 	public Iterable<Event> findFutureSearchedBy(String search){
-		return eventRepository.findAllByDateBeforeAndNameContainsIgnoreCase(LocalDate.now(),search);
+		return eventRepository.findAllByDateAfterAndNameContainsIgnoreCase(LocalDate.now(),search);
 	}
 	
 	@Override
 	public Iterable<Event> findPastSearchedBy(String search){
-		return eventRepository.findAllByDateAfterAndNameContainsIgnoreCase(LocalDate.now(),search);
+		return eventRepository.findAllByDateBeforeAndNameContainsIgnoreCase(LocalDate.now(),search);
 	}
 		
 }
