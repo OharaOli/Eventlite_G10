@@ -39,6 +39,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			venueA.setCapacity(100);
 			venueService.save(venueA);
 			
+
 			Venue venueB = new Venue() ;
 			venueB.setName("Venue B");
 			venueB.setCapacity(100);
@@ -55,8 +56,8 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			LocalDate date4 = LocalDate.of(2019, 02, 02);
 			LocalDate date5 = LocalDate.of(2019, 03, 03);
 			LocalDate date6 = LocalDate.of(2019, 04, 21);
-			LocalDate date7 = LocalDate.of(2019, 05, 30);
-			LocalDate date8 = LocalDate.of(2019, 8, 13);
+			LocalDate date7 = LocalDate.of(2020, 05, 30);
+			LocalDate date8 = LocalDate.of(2020, 8, 13);
 			
 			LocalTime time1 = LocalTime.of(12, 30);
 			LocalTime time2 = LocalTime.of(18, 30);

@@ -80,7 +80,8 @@ public class EventsControllerTest {
 		mvc.perform(get("/events").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllEvents"));
 
-		verify(eventService).findAll();
+		verify(eventService).findAllPreviousEvents();
+		verify(eventService).findAllFutureEvents();
 //		verify(venueService).findAll();
 		verifyZeroInteractions(event);
 //		verifyZeroInteractions(venue);
@@ -94,7 +95,9 @@ public class EventsControllerTest {
 		mvc.perform(get("/events").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllEvents"));
 
-		verify(eventService).findAll();
+		//verify(eventService).findAll();
+		verify(eventService).findAllPreviousEvents();
+		verify(eventService).findAllFutureEvents();
 //		verify(venueService).findAll();
 		verifyZeroInteractions(event);
 //		verifyZeroInteractions(venue);
@@ -102,26 +105,29 @@ public class EventsControllerTest {
 	
 	@Test
 
+
 	public void getSearchIndexWhenNoEvents() throws Exception {
 		String testSearch = new String("HHH");
-		when(eventService.findSearchedBy(testSearch)).thenReturn(Collections.<Event> emptyList());
+		when(eventService.findBySearchedBy(testSearch)).thenReturn(Collections.<Event> emptyList());
 
 		mvc.perform(get("/events/search?search=HHH").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("events/search")).andExpect(handler().methodName("getEventsByName"));
 
-		verify(eventService).findSearchedBy(testSearch);
+		verify(eventService).findPastSearchedBy(testSearch);
+		verify(eventService).findFutureSearchedBy(testSearch);
 		verifyZeroInteractions(event);
 	}
 
 	@Test
 	public void getSearchIndexWithEvents() throws Exception {
 		String eventSearch = new String("Event");
-		when(eventService.findSearchedBy(eventSearch)).thenReturn(Collections.<Event> singletonList(event));
+		when(eventService.findBySearchedBy(eventSearch)).thenReturn(Collections.<Event> singletonList(event));
 
 		mvc.perform(get("/events/search?search=Event").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("events/search")).andExpect(handler().methodName("getEventsByName"));
 
-		verify(eventService).findSearchedBy(eventSearch);
+		verify(eventService).findPastSearchedBy(eventSearch);
+		verify(eventService).findFutureSearchedBy(eventSearch);
 		verifyZeroInteractions(event);
 	}
 

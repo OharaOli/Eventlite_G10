@@ -37,9 +37,8 @@ public class EventsControllerApi {
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public Resources<Resource<Event>> getEventsByName(@RequestParam(value = "search", defaultValue = "") String eventSearch)
 	{
-		return eventToResource(eventService.findSearchedBy(eventSearch));
+		return eventToResource(eventService.findBySearchedBy(eventSearch));
 	}
-	
 	
 	private Resource<Event> eventToResource(Event event) {
 		Link selfLink = linkTo(EventsControllerApi.class).slash(event.getId()).withSelfRel();
