@@ -32,16 +32,19 @@
 	    <span th:text="${event.get().getName()}">Event Name</span><br> <!-- Event Date -->
 	   	<script type="text/javascript"> document.write(changeDateFormat()); </script><br>
 	    <span th:if="${event.get().time} != null" th:text="${event.get().time}">Event Time</span><br th:if="${event.get().time} != null">
-	    <span th:text="${event.get().getVenue().getName()}">Event Venue</span><br><br>
-	    <span th:if="${event.get().getDescription()} != ''" th:text="${event.get().getDescription()}"}>Event Description</span><br>
+	    <span th:text="${event.get().getVenue().getName()}">Event Venue</span><br>
+	    <br th:if="${event.get().getDescription()} != ''">
+	    <span th:if="${event.get().getDescription()} != ''" th:text="${event.get().getDescription()}"}>Event Description</span>
+	    <br th:if="${event.get().getDescription()} != ''">
 	  </section>
 	  
 	  <br>
-	  
-	  	<div sec:authorize="isAuthenticated()">
-		    <a th:href="@{/events/delete_event(eventId=${event.get().getId()})}" class="btn btn-danger">Delete</a>
-		</div>
-	  
+
+	  <div sec:authorize="isAuthenticated()">
+		<a class="btn btn-primary" role="button" th:href="@{/events/update/{num}(num=${event.get().id})}">Update</a >
+		<a th:href="@{/events/delete_event(eventId=${event.get().getId()})}" class="btn btn-danger">Delete</a>
+	  </div>
+
 	  <!-- Code for personal design
 	  
 		<h1 th:text="${event.get().getName()}">Information About This Event</h1>

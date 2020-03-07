@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Event Update</title>
+</head>
+<body>
+  <div layout:fragment="content">
+
+	<h1>Update This Event</h1>
+
+	<form th:method="put" th:action="@{/events/update/{id}(id=${event.id})}" th:object="${event}" >
+		<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		  <label for="name">Event Name: </label>
+		  <input id="name" class="form-control" type="text" name="name" value="Default" th:value="${event.name}"+ autofocus="autofocus">
+		  <p class='text-danger' th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</p>
+		</div>
+						
+		<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		  <label for="date">Event Date: </label>
+		  <input id="date" class="form-control" type="date" name="date" value="Default" th:value="${{event.date}}" >
+		  <p class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}">errors</p>
+		</div>
+			
+		<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		  <label for="time">Event Time: </label>
+		  <input class="form-control" type="time" name="time" id="time" value="Default" th:value="${{event.time}}" >
+		</div>
+			
+		<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		  <label for="venue">Choose a venue: </label><br>
+		  <select id="venue" th:field="*{venueId}">
+	        <option th:each="v:${venues}" th:value="${v.id}" th:text="${v.name}"></option>
+		  </select>
+		</div>	
+			
+		<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		  <label for="description">Description for this event: </label>
+		  <input id="description" class="form-control" type="text" name="description" value="Default" th:value="${event.description}">
+		  <p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">errors</p>
+		</div>
+
+      	<button class="btn btn-primary" type="submit"><i class="far fa-edit" aria-hidden="true"></i> Save</button>
+      	<a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+	</form>
+	
+</body>
+</html>
