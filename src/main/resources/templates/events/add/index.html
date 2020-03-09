@@ -39,7 +39,9 @@
       <textarea class="form-control" rows="5" id="description" th:field="*{description}"></textarea>
     </div> 
     
-    <button type="submit" class="btn btn-primary" role="button">Create Event</button>
+    <div sec:authorize="isAuthenticated()">
+      <button type="submit" class="btn btn-primary" role="button">Create Event</button>
+    </div>
   </form>
 </div>
 </body>
