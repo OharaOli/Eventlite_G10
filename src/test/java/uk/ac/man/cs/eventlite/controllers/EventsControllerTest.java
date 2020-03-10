@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.controllers;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -156,6 +157,38 @@ public class EventsControllerTest {
 		.andExpect(view().name("events/details")).andExpect(handler().methodName("getOneEvent"));
 		
 		verify(eventService).findEventById(id);
+		verifyZeroInteractions(eventService);
+		verifyZeroInteractions(event);			
+	}
+	
+	@Test
+	public void deleteExistingEvent() throws Exception {
+		Optional<Event> testEvent = Optional.of(event);
+		Long id = (long)1;
+		
+		when(eventService.findById(id)).thenReturn(testEvent);
+		doNothing().when(eventService).deleteById(id);
+		
+		mvc.perform(get("/events/delete_event?eventId=1").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
+		.andExpect(view().name("redirect:/events")).andExpect(handler().methodName("deleteEvent"));
+		
+		verify(eventService).findById(id);
+		verify(eventService).deleteById(id);
+		verifyZeroInteractions(eventService);
+		verifyZeroInteractions(event);			
+	}
+	
+	@Test
+	public void deleteNonExistentEvent() throws Exception {
+		Optional<Event> testEvent = Optional.<Event>empty();
+		Long id = (long)0;
+		
+		when(eventService.findById(id)).thenReturn(testEvent);
+		
+		mvc.perform(get("/events/delete_event?eventId=0").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
+		.andExpect(view().name("redirect:/events")).andExpect(handler().methodName("deleteEvent"));
+		
+		verify(eventService).findById(id);
 		verifyZeroInteractions(eventService);
 		verifyZeroInteractions(event);			
 	}

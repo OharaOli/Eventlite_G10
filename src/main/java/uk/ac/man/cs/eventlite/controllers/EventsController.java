@@ -47,11 +47,11 @@ public class EventsController {
 	}
 	
 	@RequestMapping(value = "/delete_event", method = RequestMethod.GET)
-	public String handleDeleteEvent(@RequestParam(name="eventId") Long id) {
+	public String deleteEvent(@RequestParam(name="eventId") Long id) {
 		if (eventService.findById(id).isPresent())
 		  eventService.deleteById(id) ;
-		
-		return "redirect:" ;
+
+		return "redirect:/events" ;
 	}
 
 	@RequestMapping(value="/search", method = RequestMethod.GET)
