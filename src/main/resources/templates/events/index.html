@@ -55,6 +55,10 @@
         </tr>
       </tbody>
     </table>
+    
+	<div sec:authorize="isAuthenticated()">
+		<a class="btn btn-primary" role="button" th:href="@{/events/add}">Add Event</a>
+  	</div>
 
 </body>
 </html>
