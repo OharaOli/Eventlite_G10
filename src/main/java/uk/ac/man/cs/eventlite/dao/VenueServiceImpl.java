@@ -33,4 +33,9 @@ public class VenueServiceImpl implements VenueService {
 	public Optional<Venue> findVenueById(Long id) {
 		return venueRepository.findById(id);
 	}
+	
+	@Override
+	public Iterable<Venue> findSearchedBy(String search){
+		return venueRepository.findAllByNameContainsIgnoreCase(search);
+	}
 }
