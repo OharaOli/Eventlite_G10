@@ -32,12 +32,11 @@
 	    <span th:text="${event.get().getName()}">Event Name</span><br> <!-- Event Date -->
 	   	<script type="text/javascript"> document.write(changeDateFormat()); </script><br>
 	    <span th:if="${event.get().time} != null" th:text="${event.get().time}">Event Time</span><br th:if="${event.get().time} != null">
-	    <span th:text="${event.get().getVenue().getName()}">Event Venue</span><br>
+	    <a th:href="@{/venues/{num}(num=${event.get().getVenue().getId()})}" th:text="${event.get().getVenue().getName()}">Event Venue</a><br>
 	    <br th:if="${event.get().getDescription()} != ''">
 	    <span th:if="${event.get().getDescription()} != ''" th:text="${event.get().getDescription()}"}>Event Description</span>
 	    <br th:if="${event.get().getDescription()} != ''">
 	  </section>
-	  
 	  <br>
 
 	  <div sec:authorize="isAuthenticated()">
