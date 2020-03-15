@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Venue Details</title>
+</head>
+<body>
+	<div layout:fragment="content" >	
+	  <section th:if="${venue.isPresent()}">  
+	    <span th:text="${venue.get().getName()}">Venue Name</span><br>
+	    <span th:text="${venue.get().getAddress()}">Venue Address</span><br>
+	    <span th:text="${venue.get().getPostcode()}">Venue Postcode</span><br>
+	    <span th:text="${'Capacity: ' + venue.get().getCapacity()}">Venue Capacity</span><br><br>
+	    
+	    Events coming up...
+	    <br>
+	    
+	  </section>
+	</div>
+
+</body>
+</html>
