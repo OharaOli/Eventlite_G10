@@ -1,6 +1,7 @@
 package uk.ac.man.cs.eventlite.entities;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "venues")
@@ -17,6 +18,9 @@ public class Venue {
 	private String address;
 	
 	private String postcode;
+
+	@OneToMany(targetEntity=Event.class, mappedBy="venue")
+	private Set<Event> events;
 
 	public Venue() {
 	}
@@ -59,6 +63,10 @@ public class Venue {
 
 	public void setPostcode (String postcode) {
 		this.postcode = postcode;
+	}
+
+	public Set<Event> getEvents() {
+		return events;
 	}
 	
 }

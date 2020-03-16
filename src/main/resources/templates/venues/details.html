@@ -15,7 +15,27 @@
 	    
 	    Events coming up...
 	    <br>
-	    
+
+	  <table class="table table-striped table-hover">
+		  <thead>
+		  <tr>
+			  <th><i class="fas fa-bolt"></i> Event</th>
+			  <th><i class="fas fa-map-marker-alt"></i> Venue</th>
+			  <th><i class="fas fa-calendar"></i> Date</th>
+			  <th><i class="fas fa-clock"></i> Time</th>
+		  </tr>
+		  </thead>
+		  <tbody>
+		  <tr th:each="e : ${futureEvents}">
+			  <td><a th:href="@{/events/{num}(num=${e.id})}" th:text="${e.name}">Event Name</a></td>
+			  <td th:text="${e.getVenue().getName()}">Event Venue</td>
+			  <td th:text="${{e.date}}">Event Date</td>
+			  <td th:text="${{e.time}}">Event Time</td>
+		  </tr>
+		  </tbody>
+	  </table>
+
+
 	  </section>
 	</div>
 

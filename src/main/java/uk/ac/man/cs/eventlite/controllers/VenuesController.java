@@ -32,9 +32,8 @@ public class VenuesController {
 		model.addAttribute("venue", venue);
 		
 		if (venue.isPresent()) {
-			model.addAttribute("events", eventService);
+			model.addAttribute("futureEvents", venueService.findUpcomingEvents(id));
 		}
-		
 
 		return "venues/details";
 	}	
