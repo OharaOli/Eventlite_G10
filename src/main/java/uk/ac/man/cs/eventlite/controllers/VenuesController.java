@@ -19,11 +19,11 @@ import uk.ac.man.cs.eventlite.entities.Venue;
 public class VenuesController {
 
 	@Autowired
-	private VenueService eventService;
-	
-	@Autowired
 	private VenueService venueService;
-	
+
+	@Autowired
+	private VenueService eventService;
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String getOneVenue(@PathVariable("id") long id,
 		@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
