@@ -12,7 +12,9 @@ public class Venue {
 
 	private String name;
 
-	private int capacity;
+	private long capacity;
+	
+	private String description;
 
 	public Venue() {
 	}
@@ -33,11 +35,19 @@ public class Venue {
 		this.name = name;
 	}
 
-	public int getCapacity() {
+	public long getCapacity() {
 		return capacity;
 	}
 
-	public void setCapacity(int capacity) {
+	public void setCapacity(long capacity) {
 		this.capacity = capacity;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String desc) {
+		this.description = desc;
 	}
 }
