@@ -34,6 +34,15 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		
 		if (venueService.count() == 0 || eventService.count() == 0) {
 			
+			// empty Venue
+			Venue emptyVenue = new Venue() ;
+			emptyVenue.setName("");
+			emptyVenue.setAddress("");
+			emptyVenue.setPostcode("");
+			emptyVenue.setCapacity(0);
+			venueService.save(emptyVenue) ;
+			
+			
 			Venue venueA = new Venue() ;
 			venueA.setName("Venue A");
 			venueA.setAddress("23 Manchester Road");

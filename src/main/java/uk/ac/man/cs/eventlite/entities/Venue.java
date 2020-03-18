@@ -69,4 +69,12 @@ public class Venue {
 		return events;
 	}
 	
+	public boolean hasEvents() {
+		return events.size() != 0 ;
+	}
+	
+	public boolean hasEvent(Event event) {
+		return events.contains(event) ;
+	}
+	
 }

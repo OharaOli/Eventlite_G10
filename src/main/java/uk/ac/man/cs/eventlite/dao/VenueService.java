@@ -17,4 +17,6 @@ public interface VenueService{
 
 	public Iterable<Event> findUpcomingEvents(long id);
 	
+	public void deleteById(Long id);
+	
 }

@@ -55,5 +55,10 @@ public class VenueServiceImpl implements VenueService {
 			return events_list;
 		}
 	}
+	
+	@Override
+	public void deleteById(Long id) {
+		venueRepository.deleteById(id) ;
+	}
 
 }

@@ -13,6 +13,10 @@
 	    <span th:text="${venue.get().getPostcode()}">Venue Postcode</span><br>
 	    <span th:text="${'Capacity: ' + venue.get().getCapacity()}">Venue Capacity</span><br><br>
 	    
+	    <div sec:authorize="isAuthenticated()">
+			<a th:href="@{/venues/delete_venue(venueId=${venue.get().getId()})}" class="btn btn-danger">Delete</a>
+		</div>
+		
 	    Events coming up...
 	    <br>
 
