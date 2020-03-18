@@ -1,5 +1,6 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,10 @@ import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import javax.servlet.Filter;
 
@@ -102,5 +106,101 @@ public class VenuesControllerTest {
         verifyZeroInteractions(eventService);
         verifyZeroInteractions(event);
     }
+   
+	@Test
+	public void deleteExistingVenue() throws Exception {
+		Long id = (long) 1 ;
+		Event testEvent = new Event() ;
+		Event testFutureEvent = new Event() ;
+		Optional<Venue> testVenue = Optional.of(venue) ;
+	
+		List<Event> futureEventsList = new ArrayList<Event>() ;
+		futureEventsList.add(testFutureEvent) ;
+		Iterator<Event> futureEventsIterator = futureEventsList.iterator() ;
+		Iterable<Event> futureEvents = () -> futureEventsIterator ;
+		
+		List<Event> eventsList = new ArrayList<Event>() ;
+		eventsList.add(event) ;
+		Iterator<Event> eventsIterator = eventsList.iterator() ;
+		Iterable<Event> events = () -> eventsIterator ;
+		
+		
+		
+		when(eventService.findAllFutureEvents()).thenReturn(futureEvents) ;
+		when(eventService.findAll()).thenReturn(events) ;
+		when(venueService.findVenueById(id)).thenReturn(testVenue);
+		when(venue.getId()).thenReturn(id);
+		when(event.getVenue()).thenReturn(venue);
+		doNothing().when(event).setVenue(venue);
+		doNothing().when(venueService).deleteById(id);
+		
+		mvc.perform(get("/venues/delete_venue?venueId=1").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
+		.andExpect(view().name("redirect:/events")).andExpect(handler().methodName("deleteVenue"));
+
+		verify(eventService).findAllFutureEvents();
+		verify(eventService).findAll();
+		verify(venueService, times(2)).findVenueById(id);
+		verify(venueService).deleteById(id);
+		verify(venue, times(2)).getId();
+		verify(event, times(2)).getVenue();
+		verify(event).setVenue(venue);
+		verifyZeroInteractions(venueService);
+		verifyZeroInteractions(venue);
+		verifyZeroInteractions(event);
+		verifyZeroInteractions(eventService);
+	}
+	
+	@Test
+	public void deleteExistingVenueWithFutureEvent() throws Exception {
+		Long id = (long) 1 ;
+		Optional<Venue> testVenue = Optional.of(venue) ;
+	
+		List<Event> futureEventsList = new ArrayList<Event>() ;
+		futureEventsList.add(event) ;
+		Iterator<Event> futureEventsIterator = futureEventsList.iterator() ;
+		Iterable<Event> futureEvents = () -> futureEventsIterator ;
+		
+		List<Event> eventsList = new ArrayList<Event>() ;
+		eventsList.add(event) ;
+		Iterator<Event> eventsIterator = eventsList.iterator() ;
+		Iterable<Event> events = () -> eventsIterator ;
+		
+		
+		
+		when(eventService.findAllFutureEvents()).thenReturn(futureEvents) ;
+		when(eventService.findAll()).thenReturn(events) ;
+		when(venueService.findVenueById(id)).thenReturn(testVenue);
+		when(venue.getId()).thenReturn(id);
+		when(event.getVenue()).thenReturn(venue);
+		
+		mvc.perform(get("/venues/delete_venue?venueId=1").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
+		.andExpect(view().name("redirect:/events")).andExpect(handler().methodName("deleteVenue"));
+
+		verify(eventService).findAllFutureEvents();
+		verify(eventService).findAll();
+		verify(venueService).findVenueById(id);
+		verify(venue).getId();
+		verify(event).getVenue();
+		verifyZeroInteractions(venueService);
+		verifyZeroInteractions(venue);
+		verifyZeroInteractions(event);
+		verifyZeroInteractions(eventService);
+	}
+	
+	@Test
+	public void deleteNonExistentVenue() throws Exception {
+		Long id = (long) 1 ;
+		Optional<Venue> testVenue = Optional.<Venue>empty() ;
+
+
+
+		when(venueService.findVenueById(id)).thenReturn(testVenue);
+		
+		mvc.perform(get("/venues/delete_venue?venueId=1").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
+		.andExpect(view().name("redirect:/events")).andExpect(handler().methodName("deleteVenue"));
+
+		verify(venueService).findVenueById(id);
+		verifyZeroInteractions(venueService);
+	}
 
 }

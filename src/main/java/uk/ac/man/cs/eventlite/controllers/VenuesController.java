@@ -51,6 +51,7 @@ public class VenuesController {
 		{
 			// Initialize variables
 			boolean delete = true ;
+			
 			Iterator<Event> futureEventsIterator = eventService.findAllFutureEvents().iterator() ;
 			List<Event> futureEvents = new ArrayList<Event>() ;
 			
@@ -58,21 +59,31 @@ public class VenuesController {
 			while (futureEventsIterator.hasNext())
 				futureEvents.add(futureEventsIterator.next()) ;
 			
-			Iterable<Event> eventList = eventService.findAll() ;
+			Iterator<Event> eventIterator = eventService.findAll().iterator() ;
+			List<Event> events = new ArrayList<Event>() ;
 			
+			while (eventIterator.hasNext())
+				events.add(eventIterator.next()) ;
+
 			// Go through every event in DB. If a future event is held in the venue we are trying
 			// to delete, then do not delete.
-			for (Event event : eventList)
+			for (Event event : events)
 			{
 				if (event.getVenue().getId() == id)
 					if (futureEvents.contains(event))
 						delete = false ;
-					else
-						event.setVenue(venueService.findVenueById((long)1).get()) ;
 			}
-			
+
 			if (delete)
+			{
+				for (Event event : events)
+				{
+					if (event.getVenue().getId() == id)
+						event.setVenue(venueService.findVenueById((long)1).get()) ;
+				}
+			
 				venueService.deleteById(id) ;
+			}
 			
 		}
 		
