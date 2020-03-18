@@ -32,7 +32,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 
 		
-		//if (venueService.count() == 0 || eventService.count() == 0) {
+		if (venueService.count() == 0 || eventService.count() == 0) {
 			
 			Venue venueA = new Venue() ;
 			venueA.setName("Venue A");
@@ -144,8 +144,8 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent6.setDescription("Test Event 6...");
 			eventService.save(testEvent6);	
 			
-		//}
-		//else
+		}
+		else
 		{
 			log.info("Database already populated. Skipping data initialization.");
 		}

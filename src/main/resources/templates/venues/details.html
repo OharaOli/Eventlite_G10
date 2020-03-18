@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Venue Details</title>
+</head>
+<body>
+	<div layout:fragment="content" >
+	  <section th:if="${venue.isPresent()}">  
+	    <span th:text="${venue.get().getName()}">Venue Name</span><br> 
+	   	
+	   
+	    <br th:if="${venue.get().getDescription()} != ''">
+	    <span th:if="${venue.get().getDescription()} != ''" th:text="${venue.get().getDescription()}"}>Venue Description</span>
+	  </section>
+	  
+	  <br>
+	  <div sec:authorize="isAuthenticated()">
+		<a class="btn btn-primary" role="button" th:href="@{/venues/update/{num}(num=${venue.get().id})}">Update</a >
+		<a th:href="@{/venues/delete_venue(venueId=${venue.get().getId()})}" class="btn btn-danger">Delete</a>
+	  </div>
+	  
+	  <!-- Code for personal design
+	  
+		<h1 th:text="${venue.get().getName()}">Information About This Venue</h1>
+		
+		<footer th:fragment="copy">
+		  &copy; 2020 G10
+		</footer>
+		
+	  -->
+	  
+	</div>
+</body>
+</html>
