@@ -140,12 +140,13 @@ public class EventsController {
 	
 	
 	@RequestMapping(value="/add",method = RequestMethod.POST)
-	public String saveNewEvent(final Event event, final BindingResult bindingResult, final ModelMap model) {
-	    if (bindingResult.hasErrors()) {
-	        return "add";
+	public String createEvent(@RequestBody @Valid @ModelAttribute ("event") Event event, 
+			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
+	    if (errors.hasErrors()) {
+	    	model.addAttribute("event", event);
+	        return "events/add/index";
 	    }
 	    this.eventService.save(event);
-	    model.clear();
 	    return "redirect:/events";
 	}
 
