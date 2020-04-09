@@ -5,14 +5,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
@@ -43,6 +50,13 @@ public class VenuesController {
 
 		return "venues/details";
 	}	
+	
+	@RequestMapping(value = "/add",method = RequestMethod.GET)
+	public String getAddEvents(Model model) {
+	  model.addAttribute("venue", new Venue());
+
+	  return "venues/add/index" ;
+	}
 	
 	@RequestMapping(value = "/delete_venue", method = RequestMethod.GET)
 	public String deleteVenue(@RequestParam(name="venueId") Long id) {
@@ -89,5 +103,17 @@ public class VenuesController {
 		
 		return "redirect:/events" ;
 	}
+	
+	@RequestMapping(value="/add",method = RequestMethod.POST)
+	public String createVenue(@RequestBody @Valid @ModelAttribute ("venue") Venue venue, 
+			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
+	    if (errors.hasErrors()) {
+	    	model.addAttribute("venue", venue);
+	        return "venues/add/index";
+	    }
+	    this.venueService.save(venue);
+	    return "redirect:/events";
+	}
+
 	
 }

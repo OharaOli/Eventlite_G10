@@ -8,6 +8,16 @@
 <body>
   <div layout:fragment="content">
   
+  	<div sec:authorize="isAuthenticated()">
+		<a class="btn btn-primary" role="button" th:href="@{/events/add}">Add Event</a>
+  	</div>	
+  	<br>
+  	
+  	<div sec:authorize="isAuthenticated()">
+		<a class="btn btn-primary" role="button" th:href="@{/venues/add}">Add Venue</a>
+  	</div>
+  	<br>
+  
       <form action="#" th:action="@{events/search}" th:object="${e}" method="get">
         <input type="text" name="search" id="search" placeholder="Search events ..." th:value="${s}"/>
         <button type="submit"><i class="fa fa-search"></i></button>
@@ -54,10 +64,6 @@
         </tr>
       </tbody>
     </table>
-    
-	<div sec:authorize="isAuthenticated()">
-		<a class="btn btn-primary" role="button" th:href="@{/events/add}">Add Event</a>
-  	</div>
 
 </body>
 </html>

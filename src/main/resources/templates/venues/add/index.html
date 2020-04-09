@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Add Venue</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h1>Add venue</h1>
+
+  <form action="#" th:action="@{/venues/add}" th:object="${venue}" method="post">
+     
+    <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+      <label for="name">Venue Name:</label>
+      <input type="text" class="form-control" id="name" name="name" th:field="*{name}">
+      <p class='text-danger' th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</p>
+    </div>
+    
+    <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		<label for="address">Venue Address: </label>
+		<input id="address" class="form-control" type="text" name="address" th:field="*{name}">
+		<p class='text-danger' th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Address Error</p>
+	</div>
+	
+	<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		<label for="postcode">Venue Postcode: </label>
+		<input id="postcode" class="form-control" type="text" name="postcode" th:field="*{name}">
+		<p class='text-danger' th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Postcode Error</p>
+	</div>
+    
+    <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		<label for="capacity">Venue Capacity: </label>
+		<input id="capacity" class="form-control" type="number" name="capacity" value="Default" th:field="*{name}">
+		<p class='text-danger' th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Capacity Error</p>
+	</div>
+			
+	<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		<label for="description">Venue Description: </label>
+		<input id="description" class="form-control" type="text" name="description" th:field="*{name}">
+		<p class='text-danger' th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Description Error</p>
+	</div>  
+    
+    
+    
+    <div sec:authorize="isAuthenticated()">
+      <button type="submit" class="btn btn-primary"><i class="far fa-edit" aria-hidden="true"></i>Add Venue</button>
+    </div>
+  </form>
+
+</div>
+</body>
