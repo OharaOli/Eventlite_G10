@@ -12,15 +12,12 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
-import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 @RestController
@@ -41,7 +38,7 @@ public class VenuesControllerApi {
 	{
 		return venueToResource(venueService.findSearchedBy(venueSearch));
 	}
-	
+		
 	private Resource<Venue> venueToResource(Venue venue) {
 		Link selfLink = linkTo(VenuesControllerApi.class).slash(venue.getId()).withSelfRel();
 
@@ -58,4 +55,16 @@ public class VenuesControllerApi {
 
 		return new Resources<Resource<Venue>>(resources, selfLink);
 	}
+	
+//	private Resources<Resource<Venue>> VenueToResource(Iterable<Venue> venues)
+//	{
+//		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getAllVenues()).withSelfRel();
+//
+//		List<Resource<Venue>> resources = new ArrayList<Resource<Venue>>();
+//		for (Venue venue : venues) {
+//			resources.add(venueToResource(venue));
+//		}
+//
+//		return new Resources<Resource<Venue>>(resources, selfLink);
+//	}
 }
