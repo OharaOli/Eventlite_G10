@@ -19,4 +19,7 @@ public interface VenueService{
 	
 	public void deleteById(Long id);
 	
+	public Iterable<Venue> findSearchedBy(String search);
+
+	
 }

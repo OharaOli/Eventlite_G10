@@ -39,7 +39,6 @@ public class VenueServiceImpl implements VenueService {
 		return venueRepository.findById(id);
 	}
 
-
 	@Override
 	public Iterable<Event> findUpcomingEvents(long id) {
 		Optional<Venue> venue = findVenueById(id);
@@ -60,5 +59,9 @@ public class VenueServiceImpl implements VenueService {
 	public void deleteById(Long id) {
 		venueRepository.deleteById(id) ;
 	}
-
+	
+	@Override
+	public Iterable<Venue> findSearchedBy(String search){
+		return venueRepository.findAllByNameContainsIgnoreCase(search);
+	}
 }
