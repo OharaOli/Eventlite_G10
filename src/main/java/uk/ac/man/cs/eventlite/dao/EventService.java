@@ -12,5 +12,10 @@ public interface EventService {
 
 	public Iterable<Event> findAll();
 	
+	public void update(Event event);
+	
+	public Event findOne(long id);
+
+	
 	public Optional<Event> findEventById(Long id);
 }
