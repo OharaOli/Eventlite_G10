@@ -9,11 +9,7 @@ public interface EventService {
 	public long count();
 	
 	public Event save(Event event);
-	
-	public void update(Event event);
-	
-	public Event findOne(long id);
-	
+
 	public Iterable<Event> findAll();
 	
 	public Optional<Event> findEventById(Long id);

@@ -1,10 +1,6 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import static org.mockito.Mockito.verify;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -28,13 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import uk.ac.man.cs.eventlite.EventLite;
@@ -100,8 +94,9 @@ public class EventsControllerTest {
 				.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllEvents"));
 
 		verify(eventService).findAll();
+//		verify(venueService).findAll();
 		verifyZeroInteractions(event);
-
+//		verifyZeroInteractions(venue);
 	}
 	
 	@Test
@@ -132,61 +127,6 @@ public class EventsControllerTest {
 		verify(eventService).findEventById(id);
 		verifyZeroInteractions(eventService);
 		verifyZeroInteractions(event);			
-	}
-	
-	@Test
-	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
-	public void updateEvent() throws Exception
-	{
-		when(eventService.findOne(0)).thenReturn(event);
-		
-		mvc.perform(MockMvcRequestBuilders.patch("/events/0").accept(MediaType.TEXT_HTML).with(csrf())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.param("name", "event")
-				.param("date", "2030-10-10")
-				.param("time", "12:00")
-				.sessionAttr("venue", venue)
-				.param("description", "TEST"))
-		.andExpect(status().isOk())
-		.andExpect(view().name("events/show"))
-		.andExpect(handler().methodName("updateEvent"));
-	}
-	
-	@Test
-	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
-	public void updateEventInvalid() throws Exception
-	{
-		when(eventService.findOne(0)).thenReturn(null);
-		
-		mvc.perform(MockMvcRequestBuilders.patch("/events/0").accept(MediaType.TEXT_HTML).with(csrf())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.param("date", "2030-10-10")
-				.param("time", "12:00")
-				.param("name", "event")
-				.sessionAttr("venue", venue)
-				.param("description", "TEST"))
-		.andExpect(status().isFound())
-		.andExpect(view().name("redirect:/events"))
-		.andExpect(handler().methodName("updateEvent"))
-		.andExpect(flash().attributeExists("unsuccessful"));
-	}
-	
-	@Test
-	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
-	public void updateEventNoName() throws Exception
-	{
-		when(eventService.findOne(0)).thenReturn(null);
-		
-		mvc.perform(MockMvcRequestBuilders.patch("/events/0").accept(MediaType.TEXT_HTML).with(csrf())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.param("date", "2030-10-10")
-				.param("time", "12:00")
-				.param("name", "")
-				.sessionAttr("venue", venue)
-				.param("description", "TEST"))
-		.andExpect(status().isOk())
-		.andExpect(view().name("events/update"))
-		.andExpect(handler().methodName("updateEvent"));
 	}
 	
 }

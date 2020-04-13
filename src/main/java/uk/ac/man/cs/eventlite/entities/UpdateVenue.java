@@ -26,8 +26,6 @@ public class UpdateVenue {
 	
 	private long capacity;
 
-	private String coordonates;
-
 	public void setId(long venueId) {
 		this.venueId = venueId;
 	}
@@ -59,14 +57,6 @@ public class UpdateVenue {
 	
 	public long getCapacity() {
 		return capacity;
-	}
-	
-	public String getCoords() {
-		return coordonates;
-	}
-
-	public void setCoords(String coordonates) {
-		this.coordonates = coordonates;
 	}
 	
 }
