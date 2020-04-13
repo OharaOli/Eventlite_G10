@@ -12,7 +12,11 @@
 	   	
 	   
 	    <br th:if="${venue.get().getDescription()} != ''">
-	    <span th:if="${venue.get().getDescription()} != ''" th:text="${venue.get().getDescription()}"}>Venue Description</span>
+	    <span th:if="${venue.get().getDescription()} != ''" th:text="${venue.get().getDescription()}"}>Venue Description</span><br> 
+	  	
+	 
+	  	<span th:text="${venue.get().getCoordonates()}">Venue Coordinates</span><br> 
+	  
 	  </section>
 	  
 	  <br>

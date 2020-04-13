@@ -14,6 +14,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class UpdateVenue {
 	
 	private long venueId;
+	private String coordonates;
+
 
 	@NotEmpty(message = "Venue must have a name.")
 	@Size(max = 255, message = "The name must be less than 256 characters.")
@@ -58,5 +60,14 @@ public class UpdateVenue {
 	public long getCapacity() {
 		return capacity;
 	}
+	
+	public String getCoordonates() {
+		return coordonates;
+	}
+
+	public void setCoordonates(String coordonates) {
+		this.coordonates = coordonates;
+	}
+
 	
 }

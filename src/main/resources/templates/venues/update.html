@@ -26,6 +26,12 @@
 		  <label for="description">Venue Description: </label>
 		  <input id="description" class="form-control" type="text" name="description" value="Default" th:value="${venue.getDescription()}">
 		</div>  
+			
+		<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+		  <label for="coordonates">Venue Coordonates: </label>
+		  <input id="coordonates" class="form-control" type="text" name="coordonates" value="Default" th:value="${venue.getCoordonates()}">
+		</div>
+		
 
       	<button class="btn btn-primary" type="submit"><i class="far fa-edit" aria-hidden="true"></i> Save</button>
       	<a class="btn btn-warning" role="button" href="/venues"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>

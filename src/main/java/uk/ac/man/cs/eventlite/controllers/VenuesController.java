@@ -67,8 +67,9 @@ public class VenuesController {
 		UpdateVenue venueToBeUpdated = new UpdateVenue();
 		venueToBeUpdated.setId(venue.getId());
 		venueToBeUpdated.setName(venue.getName());
-		
 		venueToBeUpdated.setDescription(venue.getDescription());
+		venueToBeUpdated.setCoordonates(venue.getCoordonates());
+		log.info("Request to open the UPDATE VENUE form page " + venue.getDescription() + " " + venue.getCoordonates() + "\\\\");
 
 		model.addAttribute("venue", venueToBeUpdated);
 		model.addAttribute("venues", venueService.findAll());
@@ -92,6 +93,8 @@ public class VenuesController {
 		venueToBeSaved.setName(venue.getName());
 		venueToBeSaved.setDescription(venue.getDescription());
 		venueToBeSaved.setCapacity(venue.getCapacity());
+		venueToBeSaved.setCoordonates(venue.getCoordonates());
+		log.info("Request to save the changes to update a venue. " + venue.getCapacity() + " " + venue.getCoordonates() + "////");
 
 		venueService.save(venueToBeSaved);
 		redirectAttrs.addFlashAttribute("ok_message", "The venue has been successfully updated.");
