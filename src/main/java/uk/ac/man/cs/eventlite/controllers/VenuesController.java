@@ -86,12 +86,34 @@ public class VenuesController {
 			return "venues/update";
 		}
 		
+	//@RequestMapping(value = "/manage/{id}", method = RequestMethod.POST)
+	//public String updateVenue(@Valid Venue venue,
+	        //BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
+	    //if (errors.hasErrors()) {
+	        //redirectAttrs.addFlashAttribute("fail_message", "Please enter valid information.");
+	        //model.addAttribute("venue", venue);
+	        //return "redirect:/venues/manage/"+venue.getId();
+	    //}
+	    //venue.setCoords();
+	    //try {
+	        //Thread.sleep(1000L);
+	    //} catch (InterruptedException e) {
+	    // TODO Auto-generated catch block
+	    //e.printStackTrace();
+	    //}
+	        //venueService.save(venue);
+	       // redirectAttrs.addFlashAttribute("ok_message", "Venue updated.");
+
+	       // return "redirect:/venues";
+	   // }
+		
 		log.info("Request to save the changes to update a venue.");
 		
 		Venue venueToBeSaved = venueService.findVenueById(id).get();
 		venueToBeSaved.setName(venue.getName());
 		venueToBeSaved.setDescription(venue.getDescription());
 		venueToBeSaved.setCapacity(venue.getCapacity());
+		venueToBeSaved.setCoords(venue.getCoords());
 
 		venueService.save(venueToBeSaved);
 		redirectAttrs.addFlashAttribute("ok_message", "The venue has been successfully updated.");

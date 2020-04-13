@@ -15,6 +15,8 @@ public class Venue {
 	private long capacity;
 	
 	private String description;
+	
+	private String coordonates;
 
 	public Venue() {
 	}
@@ -49,5 +51,13 @@ public class Venue {
 
 	public void setDescription(String desc) {
 		this.description = desc;
+	}
+	
+	public String getCoords() {
+		return coordonates;
+	}
+
+	public void setCoords(String coordonates) {
+		this.coordonates = coordonates;
 	}
 }

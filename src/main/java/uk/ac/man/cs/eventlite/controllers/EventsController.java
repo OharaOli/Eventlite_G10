@@ -28,6 +28,62 @@ import uk.ac.man.cs.eventlite.entities.UpdateEvent;
 @Controller
 @RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
 public class EventsController {
+	
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String getUpdateEvent(Model model, @PathVariable("id") long id)
+	{
+		if (!model.containsAttribute("event")) {
+			
+			model.addAttribute("event", eventService.findOne(id));
+		}
+		
+		if (!model.containsAttribute("venueList")) {
+			model.addAttribute("venueList", venueService.findAll());
+		}
+
+		return "events/update";
+	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH, 
+			consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public String updateEvent(@RequestBody @Valid @ModelAttribute Event event,
+			BindingResult errors,  Model model, @PathVariable("id") long id, 
+			RedirectAttributes redirectAttrs)
+	{
+		if (errors.hasErrors()) {
+			model.addAttribute("event", event);
+			model.addAttribute("venueList", venueService.findAll());
+			
+			return "events/update";
+		}
+		
+		Event eventToUpdate = eventService.findOne(id);
+		
+		// Redirect if invalid event
+		if (eventToUpdate == null)
+		{
+			redirectAttrs.addFlashAttribute("unsuccessful", "Event does not exist");
+			return "redirect:/events";
+		}
+		
+		// Update the values of the event
+		eventToUpdate.setName(event.getName());
+		eventToUpdate.setDate(event.getDate());
+		eventToUpdate.setDescription(event.getDescription());
+		eventToUpdate.setTime(event.getTime());
+		eventToUpdate.setVenue(event.getVenue());
+		eventService.update(eventToUpdate);
+		
+		model.addAttribute("eventName", eventService.findOne(id).getName());
+		model.addAttribute("eventDate", eventService.findOne(id).getDate());
+		model.addAttribute("eventTime", eventService.findOne(id).getTime());
+		model.addAttribute("eventVenue",
+				eventService.findOne(id).getVenue() == null ? "" : eventService.findOne(id).getVenue().getName());
+		model.addAttribute("eventDescription", eventService.findOne(id).getDescription());
+		model.addAttribute("venues", venueService.findAll());
+		
+		return "events/show";
+	}
 
 	private final static Logger log = LoggerFactory.getLogger(InitialDataLoader.class);
 	
@@ -102,3 +158,12 @@ public class EventsController {
 	} // updateEvent
 	
 }
+
+
+
+
+
+
+
+
+
