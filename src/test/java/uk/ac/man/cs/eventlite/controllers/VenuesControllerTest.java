@@ -88,38 +88,28 @@ public class VenuesControllerTest {
 	@Test
 	public void deleteExistingVenue() throws Exception {
 		Long id = (long) 1 ;
-		Event testEvent = new Event() ;
-		Event testFutureEvent = new Event() ;
 		Optional<Venue> testVenue = Optional.of(venue) ;
-	
-		List<Event> futureEventsList = new ArrayList<Event>() ;
-		futureEventsList.add(testFutureEvent) ;
-		Iterator<Event> futureEventsIterator = futureEventsList.iterator() ;
-		Iterable<Event> futureEvents = () -> futureEventsIterator ;
+		Venue otherVenue = new Venue() ;
 		
 		List<Event> eventsList = new ArrayList<Event>() ;
 		eventsList.add(event) ;
 		Iterator<Event> eventsIterator = eventsList.iterator() ;
 		Iterable<Event> events = () -> eventsIterator ;
 		
-		when(eventService.findAllFutureEvents()).thenReturn(futureEvents) ;
 		when(eventService.findAll()).thenReturn(events) ;
 		when(venueService.findVenueById(id)).thenReturn(testVenue);
-		when(venue.getId()).thenReturn(id);
+		when(venue.getId()).thenReturn((long) 2);
 		when(event.getVenue()).thenReturn(venue);
-		doNothing().when(event).setVenue(venue);
 		doNothing().when(venueService).deleteById(id);
 		
 		mvc.perform(get("/venues/delete_venue?venueId=1").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
-		.andExpect(view().name("redirect:/events")).andExpect(handler().methodName("deleteVenue"));
+		.andExpect(view().name("redirect:/venues")).andExpect(handler().methodName("deleteVenue"));
 
-		verify(eventService).findAllFutureEvents();
 		verify(eventService).findAll();
-		verify(venueService, times(2)).findVenueById(id);
+		verify(venueService).findVenueById(id);
 		verify(venueService).deleteById(id);
-		verify(venue, times(2)).getId();
-		verify(event, times(2)).getVenue();
-		verify(event).setVenue(venue);
+		verify(venue).getId();
+		verify(event).getVenue();
 		verifyZeroInteractions(venueService);
 		verifyZeroInteractions(venue);
 		verifyZeroInteractions(event);
@@ -127,30 +117,23 @@ public class VenuesControllerTest {
 	}
 	
 	@Test
-	public void deleteExistingVenueWithFutureEvent() throws Exception {
+	public void deleteExistingVenueWithEvent() throws Exception {
 		Long id = (long) 1 ;
 		Optional<Venue> testVenue = Optional.of(venue) ;
-	
-		List<Event> futureEventsList = new ArrayList<Event>() ;
-		futureEventsList.add(event) ;
-		Iterator<Event> futureEventsIterator = futureEventsList.iterator() ;
-		Iterable<Event> futureEvents = () -> futureEventsIterator ;
 		
 		List<Event> eventsList = new ArrayList<Event>() ;
 		eventsList.add(event) ;
 		Iterator<Event> eventsIterator = eventsList.iterator() ;
 		Iterable<Event> events = () -> eventsIterator ;
 		
-		when(eventService.findAllFutureEvents()).thenReturn(futureEvents) ;
 		when(eventService.findAll()).thenReturn(events) ;
 		when(venueService.findVenueById(id)).thenReturn(testVenue);
 		when(venue.getId()).thenReturn(id);
 		when(event.getVenue()).thenReturn(venue);
 		
 		mvc.perform(get("/venues/delete_venue?venueId=1").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
-		.andExpect(view().name("redirect:/events")).andExpect(handler().methodName("deleteVenue"));
+		.andExpect(view().name("redirect:/venues")).andExpect(handler().methodName("deleteVenue"));
 
-		verify(eventService).findAllFutureEvents();
 		verify(eventService).findAll();
 		verify(venueService).findVenueById(id);
 		verify(venue).getId();
@@ -169,7 +152,7 @@ public class VenuesControllerTest {
 		when(venueService.findVenueById(id)).thenReturn(testVenue);
 		
 		mvc.perform(get("/venues/delete_venue?venueId=1").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
-		.andExpect(view().name("redirect:/events")).andExpect(handler().methodName("deleteVenue"));
+		.andExpect(view().name("redirect:/venues")).andExpect(handler().methodName("deleteVenue"));
 
 		verify(venueService).findVenueById(id);
 		verifyZeroInteractions(venueService);

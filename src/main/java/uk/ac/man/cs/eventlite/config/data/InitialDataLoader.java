@@ -34,15 +34,6 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		
 		if (venueService.count() == 0 || eventService.count() == 0) {
 			
-			// empty Venue
-			Venue emptyVenue = new Venue() ;
-			emptyVenue.setName("");
-			emptyVenue.setAddress("");
-			emptyVenue.setPostcode("");
-			emptyVenue.setCapacity(0);
-			venueService.save(emptyVenue) ;
-			
-			
 			Venue venueA = new Venue() ;
 			venueA.setName("Venue A");
 			venueA.setAddress("23 Manchester Road");
@@ -64,6 +55,13 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			venueC.setPostcode("WA15 8QY");
 			venueC.setCapacity(10);
 			venueService.save(venueC);
+			
+			Venue venueD = new Venue() ;
+			venueD.setName("Venue D");
+			venueD.setAddress("69 Benedict Dover road");
+			venueD.setPostcode("TU55 6FL");
+			venueD.setCapacity(300);
+			venueService.save(venueD);
 			
 			LocalDate date1 = LocalDate.of(2017, 07, 11);
 			LocalDate date2 = LocalDate.of(2017, 07, 12);

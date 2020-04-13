@@ -84,42 +84,25 @@ public class VenuesController {
 			// Initialize variables
 			boolean delete = true ;
 			
-			Iterator<Event> futureEventsIterator = eventService.findAllFutureEvents().iterator() ;
-			List<Event> futureEvents = new ArrayList<Event>() ;
-			
-			// Convert Iterator to List so contains function could be used
-			while (futureEventsIterator.hasNext())
-				futureEvents.add(futureEventsIterator.next()) ;
-			
 			Iterator<Event> eventIterator = eventService.findAll().iterator() ;
 			List<Event> events = new ArrayList<Event>() ;
 			
 			while (eventIterator.hasNext())
 				events.add(eventIterator.next()) ;
 
-			// Go through every event in DB. If a future event is held in the venue we are trying
+			// Go through every event in DB. If an event is held in the venue we are trying
 			// to delete, then do not delete.
 			for (Event event : events)
 			{
 				if (event.getVenue().getId() == id)
-					if (futureEvents.contains(event))
-						delete = false ;
+					delete = false ;
 			}
 
 			if (delete)
-			{
-				for (Event event : events)
-				{
-					if (event.getVenue().getId() == id)
-						event.setVenue(venueService.findVenueById((long)1).get()) ;
-				}
-			
 				venueService.deleteById(id) ;
-			}
-			
 		}
 		
-		return "redirect:/events" ;
+		return "redirect:/venues" ;
 	}
 	
 	@RequestMapping(value="/add",method = RequestMethod.POST)
