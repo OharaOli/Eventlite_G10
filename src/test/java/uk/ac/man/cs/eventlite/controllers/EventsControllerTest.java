@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -25,11 +27,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -193,4 +197,50 @@ public class EventsControllerTest {
 		verifyZeroInteractions(event);			
 	}
 	
+	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	public void updateEvent() throws Exception
+	{
+		when(eventService.findOne(0)).thenReturn(event);
+		
+		mvc.perform(MockMvcRequestBuilders.patch("/events/0").accept(MediaType.TEXT_HTML).with(csrf())
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("name", "Test Event 1")
+				.param("date", "2019-01-01")
+				.param("time", "12:30")
+				.param("description", "Test Event 1..."))
+		.andExpect(status().isMethodNotAllowed());
+	}
+	
+	@Test
+	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	public void updateEventInvalid() throws Exception
+	{
+		when(eventService.findOne(0)).thenReturn(null);
+		
+		mvc.perform(MockMvcRequestBuilders.patch("/events/0").accept(MediaType.TEXT_HTML).with(csrf())
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("date", "2030-10-10")
+				.param("time", "12:00")
+				.param("name", "event")
+				.sessionAttr("venue", venue)
+				.param("description", "TEST"))
+		.andExpect(status().isMethodNotAllowed());
+	}
+	
+	@Test
+	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	public void updateEventNoName() throws Exception
+	{
+		when(eventService.findOne(0)).thenReturn(null);
+		
+		mvc.perform(MockMvcRequestBuilders.patch("/events/0").accept(MediaType.TEXT_HTML).with(csrf())
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("date", "2030-10-10")
+				.param("time", "12:00")
+				.param("name", "")
+				.sessionAttr("venue", venue)
+				.param("description", "TEST"))
+		.andExpect(status().isMethodNotAllowed());
+	}
+		
 }
