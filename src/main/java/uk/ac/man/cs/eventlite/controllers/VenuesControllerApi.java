@@ -56,6 +56,7 @@ public class VenuesControllerApi {
 		return new Resources<Resource<Venue>>(resources, selfLink);
 	}
 	
+	
 //	private Resources<Resource<Venue>> VenueToResource(Iterable<Venue> venues)
 //	{
 //		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getAllVenues()).withSelfRel();

@@ -35,6 +35,8 @@ public class Venue {
 	@OneToMany(targetEntity=Event.class, mappedBy="venue")
 	private Set<Event> events;
 
+	private String description;
+
 	public Venue() {
 	}
 
@@ -90,4 +92,11 @@ public class Venue {
 		return events.contains(event) ;
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String desc) {
+		this.description = desc;
+	}
 }

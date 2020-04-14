@@ -27,6 +27,9 @@ import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Venue;
 import uk.ac.man.cs.eventlite.entities.Event;
 
+import uk.ac.man.cs.eventlite.entities.UpdateEvent;
+import uk.ac.man.cs.eventlite.entities.UpdateVenue;
+
 @Controller
 @RequestMapping(value = "/venues", produces = { MediaType.TEXT_HTML_VALUE })
 public class VenuesController {
@@ -60,7 +63,7 @@ public class VenuesController {
 	}
 
 	@RequestMapping(value = "/add",method = RequestMethod.GET)
-	public String getAddEvents(Model model) {
+	public String getAddVenues(Model model) {
 	  model.addAttribute("venue", new Venue());
 
 	  return "venues/add/index" ;
@@ -116,5 +119,46 @@ public class VenuesController {
 	    return "redirect:/events";
 	}
 	
-}
 
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String getVenueToUpdate(Model model, @PathVariable Long id) {
+		
+		log.info("Request to open the UPDATE VENUE form page");
+
+		Venue venue = venueService.findVenueById(id).get();
+		UpdateVenue venueToBeUpdated = new UpdateVenue();
+		venueToBeUpdated.setId(venue.getId());
+		venueToBeUpdated.setName(venue.getName());
+		
+		venueToBeUpdated.setDescription(venue.getDescription());
+
+		model.addAttribute("venue", venueToBeUpdated);
+		model.addAttribute("venues", venueService.findAll());
+		
+		return "venues/update";
+	} // getvenueToUpdate
+
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+	public String updateVenue(@RequestBody @Valid @ModelAttribute ("venue") UpdateVenue venue,
+			BindingResult errors,@PathVariable Long id, Model model, RedirectAttributes redirectAttrs) {
+		
+		if (errors.hasErrors()) {
+			model.addAttribute("venue", venue);
+			model.addAttribute("venues", venueService.findAll());
+			return "venues/update";
+		}
+		
+		log.info("Request to save the changes to update a venue.");
+		
+		Venue venueToBeSaved = venueService.findVenueById(id).get();
+		venueToBeSaved.setName(venue.getName());
+		venueToBeSaved.setDescription(venue.getDescription());
+		venueToBeSaved.setCapacity(venue.getCapacity());
+
+		venueService.save(venueToBeSaved);
+		redirectAttrs.addFlashAttribute("ok_message", "The venue has been successfully updated.");
+		
+		return "redirect:/venues";
+	} // updateVenue
+	
+}

@@ -12,15 +12,18 @@
 	    <span th:text="${venue.get().getAddress()}">Venue Address</span><br>
 	    <span th:text="${venue.get().getPostcode()}">Venue Postcode</span><br>
 	    <span th:text="${'Capacity: ' + venue.get().getCapacity()}">Venue Capacity</span><br><br>
+	  
 	    
-	    <div sec:authorize="isAuthenticated()">
+	    
+	   	<div sec:authorize="isAuthenticated()">
+	   	 	<a class="btn btn-primary" role="button" th:href="@{/venues/update/{num}(num=${venue.get().id})}">Update</a >
 			<a th:href="@{/venues/delete_venue(venueId=${venue.get().getId()})}" class="btn btn-danger">Delete</a>
 		</div>
-		
+	    
+	    
 	    Events coming up...
 	    <br>
-
-	  <table class="table table-striped table-hover">
+	    	  <table class="table table-striped table-hover">
 		  <thead>
 		  <tr>
 			  <th><i class="fas fa-bolt"></i> Event</th>
@@ -38,8 +41,8 @@
 		  </tr>
 		  </tbody>
 	  </table>
-
-
+	    
+	    
 	  </section>
 	</div>
 
