@@ -1,6 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -75,9 +77,9 @@ public class VenuesControllerTest {
         Optional<Venue> testVenue = Optional.of(venue);
         Long id = (long)1;
 
-        Mockito.when(venueService.findVenueById(id)).thenReturn(testVenue);
+        when(venueService.findVenueById(id)).thenReturn(testVenue);
 
-        mvc.perform(MockMvcRequestBuilders.get("/venues/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+        mvc.perform(get("/venues/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
                 .andExpect(view().name("venues/details")).andExpect(handler().methodName("getOneVenue"));
 
         verify(venueService).findVenueById(id);
@@ -174,7 +176,7 @@ public class VenuesControllerTest {
 	}
 
 	@Test
-	public void getIndexWithVenuess() throws Exception {
+	public void getIndexWithVenues() throws Exception {
 		//when(eventService.findAll()).thenReturn(Collections.<Event> singletonList(event));
 		when(venueService.findAll()).thenReturn(Collections.<Venue> singletonList(venue));
 
@@ -213,4 +215,50 @@ public class VenuesControllerTest {
 		verifyZeroInteractions(venue);
 	}	
 	
+	@Test
+	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	public void updateVenue() throws Exception
+	{
+		when(venueService.findOne(0)).thenReturn(venue);
+		
+		mvc.perform(MockMvcRequestBuilders.patch("/venues/0").accept(MediaType.TEXT_HTML).with(csrf())
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("name", "Test Venue 1")
+				.param("capacity", "100")
+				.param("coordonates", "12M AL")
+				.param("description", "Test Venue 1..."))
+		.andExpect(status().isMethodNotAllowed());
+	}
+	
+	@Test
+	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	public void updateVenueInvalid() throws Exception
+	{
+		when(venueService.findOne(0)).thenReturn(null);
+		
+		mvc.perform(MockMvcRequestBuilders.patch("/venues/0").accept(MediaType.TEXT_HTML).with(csrf())
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("capacity", "200")
+				.param("coordonates", "5A 7MN")
+				.param("name", "venue")
+				.sessionAttr("venue", venue)
+				.param("description", "TEST"))
+		.andExpect(status().isMethodNotAllowed());
+	}
+	
+	@Test
+	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	public void updateVenueNoName() throws Exception
+	{
+		when(venueService.findOne(0)).thenReturn(null);
+		
+		mvc.perform(MockMvcRequestBuilders.patch("/venues/0").accept(MediaType.TEXT_HTML).with(csrf())
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("capacity", "300")
+				.param("coordonates", "166 MHHS")
+				.param("name", "Testing")
+				.sessionAttr("venue", venue)
+				.param("description", "TEST"))
+		.andExpect(status().isMethodNotAllowed());
+	}
 }

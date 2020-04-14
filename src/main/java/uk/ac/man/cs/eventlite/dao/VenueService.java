@@ -11,6 +11,11 @@ public interface VenueService{
 
 	public Iterable<Venue> findAll();
 	
+    public void update(Venue venue);
+	
+	public Venue findOne(long id);
+
+	
 	public Venue save(Venue venue);
 	
 	public Optional<Venue> findVenueById(Long id);

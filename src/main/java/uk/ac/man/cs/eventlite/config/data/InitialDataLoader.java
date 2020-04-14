@@ -38,7 +38,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			venueA.setName("Venue A");
 			venueA.setAddress("23 Manchester Road");
 			venueA.setPostcode("E14 3BD");
-			venueA.setCapacity(50);
+			venueA.setCapacity(100);
+			venueA.setDescription("This is a venue");
+			venueA.setCoordonates("M144AL");
 			venueService.save(venueA);
 			
 
@@ -46,14 +48,16 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			venueB.setName("Venue B");
 			venueB.setAddress("Highland Road");
 			venueB.setPostcode("S43 2EZ");
-			venueB.setCapacity(1000);
+			venueB.setCapacity(100);
+			venueA.setDescription("This is a venue");
 			venueService.save(venueB);
 			
 			Venue venueC = new Venue() ;
 			venueC.setName("Venue C");
 			venueC.setAddress("19 Acacia Avenue");
 			venueC.setPostcode("WA15 8QY");
-			venueC.setCapacity(10);
+			venueC.setCapacity(100);
+			venueA.setDescription("This is a venue");
 			venueService.save(venueC);
 			
 			Venue venueD = new Venue() ;
