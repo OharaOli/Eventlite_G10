@@ -29,6 +29,9 @@ import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.UpdateEvent;
 import uk.ac.man.cs.eventlite.entities.UpdateVenue;
 
+import uk.ac.man.cs.eventlite.entities.UpdateEvent;
+import uk.ac.man.cs.eventlite.entities.UpdateVenue;
+
 @Controller
 @RequestMapping(value = "/venues", produces = { MediaType.TEXT_HTML_VALUE })
 public class VenuesController {
@@ -62,7 +65,7 @@ public class VenuesController {
 	}
 
 	@RequestMapping(value = "/add",method = RequestMethod.GET)
-	public String getAddEvents(Model model) {
+	public String getAddVenues(Model model) {
 	  model.addAttribute("venue", new Venue());
 
 	  return "venues/add/index" ;
@@ -136,6 +139,8 @@ public class VenuesController {
 		
 		return "venues/update";
 	} // getvenueToUpdate
+	
+
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
 	public String updateVenue(@RequestBody @Valid @ModelAttribute ("venue") UpdateVenue venue,
@@ -161,5 +166,4 @@ public class VenuesController {
 		
 		return "redirect:/venues";
 	} // updateVenue
-	
 }

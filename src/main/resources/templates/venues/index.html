@@ -8,10 +8,11 @@
 <body>
   <div layout:fragment="content">
   
-  	<div sec:authorize="isAuthenticated()">
+    	<div sec:authorize="isAuthenticated()">
 		<a class="btn btn-primary" role="button" th:href="@{/venues/add}">Add Venue</a>
-  	</div>
-  	<br>
+  			</div>
+  		<br>
+  
   
       <form action="#" th:action="@{venues/search}" th:object="${v}" method="get">
         <input type="text" name="search" id="search" placeholder="Search venues ..." th:value="${s}"/>
@@ -38,6 +39,5 @@
         			</tr>
 				</tbody>
 			</table>
-
 </body>
 </html>

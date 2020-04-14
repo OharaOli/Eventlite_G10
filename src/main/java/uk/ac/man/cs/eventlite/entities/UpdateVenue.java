@@ -68,6 +68,5 @@ public class UpdateVenue {
 	public void setCoordonates(String coordonates) {
 		this.coordonates = coordonates;
 	}
-
 	
 }

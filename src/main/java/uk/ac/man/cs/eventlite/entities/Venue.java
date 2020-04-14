@@ -94,7 +94,6 @@ public class Venue {
 		return events.contains(event) ;
 	}
 	
-	
 	public String getDescription() {
 		return description;
 	}
@@ -110,5 +109,5 @@ public class Venue {
 	public void setCoordonates(String coordonates) {
 		this.coordonates = coordonates;
 	}
-
+	
 }
