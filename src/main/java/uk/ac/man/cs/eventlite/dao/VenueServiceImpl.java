@@ -23,6 +23,18 @@ public class VenueServiceImpl implements VenueService {
 	public Iterable<Venue> findAll() {
 		return venueRepository.findAll();
 	}
+	
+	@Override
+    public Venue findOne(long id) {
+        return venueRepository.findById(id).orElse(null);
+    }
+	
+	@Override
+    public void update(Venue venue)
+    {
+        venueRepository.save(venue);
+    }
+
 
 	@Override
 	public Venue save(Venue venue) {

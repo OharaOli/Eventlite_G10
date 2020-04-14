@@ -40,7 +40,7 @@ public class VenuesController {
 	private VenueService venueService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String getAllEvents(Model model) {
+	public String getAllVenues(Model model) {
 
 		//model.addAttribute("events", eventService.findAll());
 		model.addAttribute("venues", venueService.findAll());
