@@ -25,6 +25,10 @@
 	  }
   </script>
   <title>Event Details</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <script src='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.js'></script>
+  <link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' />  
 </head>
 <body>
 	<div layout:fragment="content" >
@@ -53,6 +57,17 @@
 		</footer>
 		
 	  -->
+	  
+ 	  <div id="map" style='height: 450px;'></div>
+	  <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
+	  <script type="text/javascript" th:inline="javascript">
+	    var lat = [[${event.get().venue.getLatitude()}]];
+        var lon = [[${event.get().venue.getLongitude()}]];
+        L.mapbox.accessToken = 'pk.eyJ1Ijoib2hhcmFvbGkiLCJhIjoiY2s4eWh3Y3hvMDI2dTNsb2hwd2xzOTJyOSJ9.mdslhuJlNO5EPaDc3fFACg';
+	    var map = L.mapbox.map('map')
+        	.setView([lat, lon], 6)
+        	.addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11')); 
+	  </script>
 	  
 	</div>
 </body>
