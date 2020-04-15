@@ -28,7 +28,26 @@
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <script src='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.js'></script>
-  <link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' />  
+  <link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' /> 
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css' rel='stylesheet' />
+  <style>
+  	.marker {
+  		background-image: url('https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png');
+  		background-size: cover;
+  		width: 50px;
+  		height: 50px;
+  		border-radius: 50%;
+  		cursor: pointer;
+	} 
+	.mapboxgl-popup {
+  		max-width: 200px;
+	}
+	.mapboxgl-popup-content {
+  		text-align: center;
+  		font-family: 'Open Sans', sans-serif;
+	}
+  </style>
 </head>
 <body>
 	<div layout:fragment="content" >
@@ -61,12 +80,45 @@
  	  <div id="map" style='height: 450px;'></div>
 	  <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
 	  <script type="text/javascript" th:inline="javascript">
-	    var lat = [[${event.get().venue.getLatitude()}]];
-        var lon = [[${event.get().venue.getLongitude()}]];
-        L.mapbox.accessToken = 'pk.eyJ1Ijoib2hhcmFvbGkiLCJhIjoiY2s4eWh3Y3hvMDI2dTNsb2hwd2xzOTJyOSJ9.mdslhuJlNO5EPaDc3fFACg';
-	    var map = L.mapbox.map('map')
-        	.setView([lat, lon], 6)
-        	.addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11')); 
+	  
+	    var eventPostcode = [[${event.get().venue.getPostcode()}]];
+	    var venueName = [[${event.get().venue.getName()}]];
+	    var venueAddress = [[${event.get().venue.getAddress()}]];
+	    eventPostcode = eventPostcode.replace(/\s/g, '');
+	    var accessToken = "pk.eyJ1Ijoib2hhcmFvbGkiLCJhIjoiY2s4eWh3Y3hvMDI2dTNsb2hwd2xzOTJyOSJ9.mdslhuJlNO5EPaDc3fFACg"
+	    var urlToSend = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + eventPostcode + ".json?access_token=" + accessToken + ""
+
+	  	var data =$.ajax({
+        	url: urlToSend,
+        	dataType: "json",
+        	async: false
+		}).responseText;
+	    
+	    data = JSON.parse(data);
+	    
+	    var features = data.features;
+	    var lon = features[0].center[0];
+	    var lat = features[0].center[1];
+	    var coords = new Array(lon, lat);
+	    
+	    
+        mapboxgl.accessToken = 'pk.eyJ1Ijoib2hhcmFvbGkiLCJhIjoiY2s4eWh3Y3hvMDI2dTNsb2hwd2xzOTJyOSJ9.mdslhuJlNO5EPaDc3fFACg';
+	    var map = new mapboxgl.Map({
+  					container: 'map',
+  					style: 'mapbox://styles/mapbox/light-v10',
+  					center: coords,
+  					zoom: 15
+				});
+        	
+        var el = document.createElement('div');
+ 		el.className = 'marker';
+
+  		// make a marker for each feature and add to the map
+  		new mapboxgl.Marker(el)
+    		.setLngLat(coords)
+    		.setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+            .setHTML('<h3>' + venueName + '</h3><p>' + venueAddress + '</p>'))
+            .addTo(map);
 	  </script>
 	  
 	</div>
