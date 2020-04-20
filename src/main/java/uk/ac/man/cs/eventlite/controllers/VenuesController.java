@@ -78,7 +78,7 @@ public class VenuesController {
 	}
 	
 	@RequestMapping(value = "/delete_venue", method = RequestMethod.GET)
-	public String deleteVenue(@RequestParam(name="venueId") Long id) 
+	public String deleteVenue(@RequestParam(name="venueId") Long id, RedirectAttributes redirectAttrs) 
 	{
 		if (venueService.findVenueById(id).isPresent())
 		{
@@ -96,7 +96,10 @@ public class VenuesController {
 			for (Event event : events)
 			{
 				if (event.getVenue().getId() == id)
-					delete = false ;
+				{
+					delete = false;
+					redirectAttrs.addFlashAttribute("deleteAlert", true);
+				}
 			}
 
 			if (delete)
@@ -114,7 +117,7 @@ public class VenuesController {
 	        return "venues/add/index";
 	    }
 	    this.venueService.save(venue);
-	    return "redirect:/events";
+	    return "redirect:/venues";
 	}
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
