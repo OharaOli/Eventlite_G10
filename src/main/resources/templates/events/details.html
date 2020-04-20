@@ -3,88 +3,59 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default}">
 <head>
-  <script type="text/javascript">
-	  input_date = "[[${event.get().date}]]";
-	  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	  
-	  function changeDateFormat() {
-	    YY_MM_DD = input_date.split('-');    
-	    day = Number(YY_MM_DD[2]);
-	    
-		switch (day % 10) {   
-			case 1:  day_postfix = "st"; break;
-			case 2:  day_postfix = "nd"; break;
-			case 3:  day_postfix = "rd"; break;
-			default: day_postfix = "th";
+	<title>Event Details</title>
+  	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  	<script src='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.js'></script>
+  	<link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' /> 
+  	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js'></script>
+  	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css' rel='stylesheet' />
+  	<style>
+  	   #EventArea {
+      		background-color: #F5F5F5;
+    	}
+  		.tab { margin-left: 30px; }
+  		.marker {
+  			background-image: url('https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png');
+  			background-size: cover;
+  			width: 50px;
+  			height: 50px;
+  			border-radius: 50%;
+  			cursor: pointer;
+		} 
+		.mapboxgl-popup {
+  			max-width: 200px;
 		}
-		
-		if (day > 10 && day < 14)
-			day_postfix = "th";
-
-	  	return day + day_postfix.sup() + " " + months[Number(YY_MM_DD[1])-1] + " " + YY_MM_DD[0];
-	  }
-  </script>
-  <title>Event Details</title>
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-  <script src='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.js'></script>
-  <link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' /> 
-  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css' rel='stylesheet' />
-  <style>
-  	.marker {
-  		background-image: url('https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png');
-  		background-size: cover;
-  		width: 50px;
-  		height: 50px;
-  		border-radius: 50%;
-  		cursor: pointer;
-	} 
-	.mapboxgl-popup {
-  		max-width: 200px;
-	}
-	.mapboxgl-popup-content {
-  		text-align: center;
-  		font-family: 'Open Sans', sans-serif;
-	}
-  </style>
+		.mapboxgl-popup-content {
+  			text-align: center;
+  			font-family: 'Open Sans', sans-serif;
+		}
+  	</style>
 </head>
 <body>
 	<div layout:fragment="content" >
-	  <section th:if="${event.isPresent()}">  
-	    <span th:text="${event.get().getName()}">Event Name</span><br> <!-- Event Date -->
-	   	<script type="text/javascript"> document.write(changeDateFormat()); </script><br>
-	    <span th:if="${event.get().time} != null" th:text="${event.get().time}">Event Time</span><br th:if="${event.get().time} != null">
-	    <a th:href="@{/venues/{num}(num=${event.get().getVenue().getId()})}" th:text="${event.get().getVenue().getName()}">Event Venue</a><br>
-	    <br th:if="${event.get().getDescription()} != ''">
-	    <span th:if="${event.get().getDescription()} != ''" th:text="${event.get().getDescription()}"}>Event Description</span>
-	    <br th:if="${event.get().getDescription()} != ''">
+	  <section id="EventArea" th:if="${event.isPresent()}">  
+	    <br>
+	    <h3 class="tab" th:text="${event.get().getName()}">Event Name</h3>
+	   	<p class="tab"><a th:href="@{/venues/{num}(num=${event.get().getVenue().getId()})}" th:text="${event.get().getVenue().getName()}">Event Venue</a></p>
+	   	<p class="tab" th:if="${event.get().time} != null" th:utext="${'At ' + event.get().time + ' on '+ event.get().getFormattedDate()}">Event Time & Date</p>
+	   	<p class="tab" th:unless="${event.get().time} != null" th:utext="${'On ' + event.get().getFormattedDate()}">Event Date</p>
+	    <p class="tab" th:if="${event.get().getDescription()} != ''" th:text="${event.get().getDescription()}"}>Event Description</p>
+	  	<p class="tab"><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></p>
+	  	<br>
 	  </section>
 	  <br>
-
 	  <div sec:authorize="isAuthenticated()">
 		<a class="btn btn-primary" role="button" th:href="@{/events/update/{num}(num=${event.get().id})}">Update</a >
 		<a th:href="@{/events/delete_event(eventId=${event.get().getId()})}" class="btn btn-danger">Delete</a>
 	  </div>
-
-	  <!-- Code for personal design
-	  
-		<h1 th:text="${event.get().getName()}">Information About This Event</h1>
-		
-		<footer th:fragment="copy">
-		  &copy; 2020 G10
-		</footer>
-		
-	  -->
 	  
  	  <div id="map" style='height: 450px;'></div>
 	  <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
 	  <script type="text/javascript" th:inline="javascript">
 	  
-	    var eventPostcode = [[${event.get().venue.getPostcode()}]];
-	    var venueName = [[${event.get().venue.getName()}]];
-	    var venueAddress = [[${event.get().venue.getAddress()}]];
-	    eventPostcode = eventPostcode.replace(/\s/g, '');
+	    var eventName = [[${event.get().getName()}]];
+	    var eventPostcode = [[${event.get().venue.getPostcode()}]].replace(/\s/g, '');
 	    var accessToken = "pk.eyJ1Ijoib2hhcmFvbGkiLCJhIjoiY2s4eWh3Y3hvMDI2dTNsb2hwd2xzOTJyOSJ9.mdslhuJlNO5EPaDc3fFACg"
 	    var urlToSend = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + eventPostcode + ".json?access_token=" + accessToken + ""
 
@@ -101,11 +72,10 @@
 	    var lat = features[0].center[1];
 	    var coords = new Array(lon, lat);
 	    
-	    
         mapboxgl.accessToken = 'pk.eyJ1Ijoib2hhcmFvbGkiLCJhIjoiY2s4eWh3Y3hvMDI2dTNsb2hwd2xzOTJyOSJ9.mdslhuJlNO5EPaDc3fFACg';
 	    var map = new mapboxgl.Map({
   					container: 'map',
-  					style: 'mapbox://styles/mapbox/light-v10',
+  					style: 'mapbox://styles/mapbox/streets-v11', 
   					center: coords,
   					zoom: 15
 				});
@@ -117,10 +87,12 @@
   		new mapboxgl.Marker(el)
     		.setLngLat(coords)
     		.setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-            .setHTML('<h3>' + venueName + '</h3><p>' + venueAddress + '</p>'))
+            .setHTML('<h6>' + eventName + '</h6>'))
             .addTo(map);
 	  </script>
 	  
+	  <br>
+	  <footer th:fragment="copy">&copy; 2020 G10</footer>	  
 	</div>
 </body>
 </html>
