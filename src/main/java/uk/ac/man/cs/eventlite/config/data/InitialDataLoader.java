@@ -74,7 +74,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			LocalDate date5 = LocalDate.of(2019, 03, 03);
 			LocalDate date6 = LocalDate.of(2019, 04, 21);
 			LocalDate date7 = LocalDate.of(2020, 05, 30);
-			LocalDate date8 = LocalDate.of(2020, 8, 13);
+			LocalDate date8 = LocalDate.of(2021, 8, 13);
 			
 			LocalTime time1 = LocalTime.of(12, 30);
 			LocalTime time2 = LocalTime.of(18, 30);
@@ -82,7 +82,8 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			// Example event 1.
 			Event event1 = new Event();
 			event1.setName("Event Apple");
-			event1.setDate(date2);
+			event1.setDate(date8);
+			event1.setTime(time2);
 			event1.setVenue(venueA);
 			event1.setDescription("Event Apple will be host to some of the world’s best iOS developers...");
 			eventService.save(event1);
@@ -90,7 +91,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			// Example event 2.
 			Event event2 = new Event();
 			event2.setName("Event Alpha");
-			event2.setDate(date1);
+			event2.setDate(date7);
 			event2.setTime(time1);
 			event2.setVenue(venueB);
 			event2.setDescription("Event Alpha is the first of its kind...");
@@ -145,7 +146,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			Event testEvent5 = new Event();
 			testEvent5.setName("Test Event 5");
 			testEvent5.setVenue(venueC);
-			testEvent5.setDate(date7);
+			testEvent5.setDate(date1);
 			testEvent5.setTime(time1);
 			testEvent5.setDescription("Test Event 5...");
 			eventService.save(testEvent5);		

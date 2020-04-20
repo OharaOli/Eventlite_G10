@@ -37,7 +37,11 @@ public class Venue {
 	
 	private String description;
 	
-	private String coordonates;
+	private String coordinates;
+	
+	private double latitude;
+	
+	private double longitude;
 
 	public Venue() {
 	}
@@ -103,11 +107,28 @@ public class Venue {
 	}
 	
 	public String getCoordonates() {
-		return coordonates;
+		return coordinates;
 	}
 
-	public void setCoordonates(String coordonates) {
-		this.coordonates = coordonates;
+	public void setCoordonates(String coordinates) {
+		this.coordinates = coordinates;
 	}
+	
+	public double getLatitude() {
+		return this.latitude;
+	}
+	
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	
+	public double getLongitude() {
+		return this.longitude;
+	}
+	
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
 	
 }
