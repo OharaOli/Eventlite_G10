@@ -254,11 +254,13 @@ public class VenuesControllerTest {
 		
 		mvc.perform(MockMvcRequestBuilders.patch("/venues/0").accept(MediaType.TEXT_HTML).with(csrf())
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("id", "0")
+				.param("address", "address")
+				.param("postcode", "postcode")
 				.param("capacity", "300")
-				.param("coordonates", "166 MHHS")
-				.param("name", "Testing")
 				.sessionAttr("venue", venue)
 				.param("description", "TEST"))
-		.andExpect(status().isMethodNotAllowed());
+				.andExpect(status().isMethodNotAllowed());
 	}
+	
 }
