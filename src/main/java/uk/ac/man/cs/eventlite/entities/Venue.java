@@ -42,7 +42,7 @@ public class Venue {
 	private double latitude;
 	
 	private double longitude;
-
+	
 	public Venue() {
 	}
 
@@ -129,6 +129,4 @@ public class Venue {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-
-	
 }

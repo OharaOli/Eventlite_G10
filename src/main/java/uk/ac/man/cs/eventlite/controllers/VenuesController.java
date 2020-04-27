@@ -26,10 +26,6 @@ import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Venue;
 import uk.ac.man.cs.eventlite.entities.Event;
-import uk.ac.man.cs.eventlite.entities.UpdateEvent;
-import uk.ac.man.cs.eventlite.entities.UpdateVenue;
-
-import uk.ac.man.cs.eventlite.entities.UpdateEvent;
 import uk.ac.man.cs.eventlite.entities.UpdateVenue;
 
 @Controller
@@ -82,7 +78,7 @@ public class VenuesController {
 	}
 	
 	@RequestMapping(value = "/delete_venue", method = RequestMethod.GET)
-	public String deleteVenue(@RequestParam(name="venueId") Long id) 
+	public String deleteVenue(@RequestParam(name="venueId") Long id, RedirectAttributes redirectAttrs) 
 	{
 		if (venueService.findVenueById(id).isPresent())
 		{
@@ -100,7 +96,10 @@ public class VenuesController {
 			for (Event event : events)
 			{
 				if (event.getVenue().getId() == id)
-					delete = false ;
+				{
+					delete = false;
+					redirectAttrs.addFlashAttribute("deleteAlert", true);
+				}
 			}
 
 			if (delete)
@@ -118,7 +117,7 @@ public class VenuesController {
 	        return "venues/add/index";
 	    }
 	    this.venueService.save(venue);
-	    return "redirect:/events";
+	    return "redirect:/venues";
 	}
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
@@ -130,9 +129,11 @@ public class VenuesController {
 		UpdateVenue venueToBeUpdated = new UpdateVenue();
 		venueToBeUpdated.setId(venue.getId());
 		venueToBeUpdated.setName(venue.getName());
-		venueToBeUpdated.setDescription(venue.getDescription());
-		venueToBeUpdated.setCoordonates(venue.getCoordonates());
-		log.info("Request to open the UPDATE VENUE form page " + venue.getDescription() + " " + venue.getCoordonates() + "\\\\");
+		venueToBeUpdated.setAddress(venue.getAddress());
+		venueToBeUpdated.setPostcode(venue.getPostcode());
+		venueToBeUpdated.setCapacity(venue.getCapacity());
+		
+		log.info("Request to open the UPDATE VENUE form page ");
 
 		model.addAttribute("venue", venueToBeUpdated);
 		model.addAttribute("venues", venueService.findAll());
@@ -140,8 +141,6 @@ public class VenuesController {
 		return "venues/update";
 	} // getvenueToUpdate
 	
-
-
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
 	public String updateVenue(@RequestBody @Valid @ModelAttribute ("venue") UpdateVenue venue,
 			BindingResult errors,@PathVariable Long id, Model model, RedirectAttributes redirectAttrs) {
@@ -156,14 +155,16 @@ public class VenuesController {
 		
 		Venue venueToBeSaved = venueService.findVenueById(id).get();
 		venueToBeSaved.setName(venue.getName());
-		venueToBeSaved.setDescription(venue.getDescription());
+		venueToBeSaved.setAddress(venue.getAddress());
+		venueToBeSaved.setPostcode(venue.getPostcode());
 		venueToBeSaved.setCapacity(venue.getCapacity());
-		venueToBeSaved.setCoordonates(venue.getCoordonates());
-		log.info("Request to save the changes to update a venue. " + venue.getCapacity() + " " + venue.getCoordonates() + "////");
+		
+		log.info("Request to save the changes to update a venue. ");
 
 		venueService.save(venueToBeSaved);
 		redirectAttrs.addFlashAttribute("ok_message", "The venue has been successfully updated.");
 		
 		return "redirect:/venues";
 	} // updateVenue
+
 }

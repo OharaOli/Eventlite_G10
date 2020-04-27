@@ -5,6 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -63,6 +64,37 @@ public class Event {
 		return date;
 	}
 
+	public String getFormattedDate() {
+		String formattedDate = "";
+		int dayOfMonth = date.getDayOfMonth();
+		final String[] months = {"January", "February", "March", "April", "May", "June", "July",
+								"August", "September", "October", "November", "December"};
+		final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+		
+		formattedDate += days[date.getDayOfWeek().getValue() - 1] + ", " + dayOfMonth;
+		
+		if (3 < dayOfMonth && dayOfMonth < 21)
+			formattedDate += "<sup>th</sup>";
+		else 
+		{
+			switch (dayOfMonth % 10) 
+			{
+				case 1:
+					formattedDate += "<sup>st</sup>"; break;
+				case 2:
+					formattedDate += "<sup>nd</sup>"; break;
+				case 3:
+					formattedDate += "<sup>rd</sup>"; break;
+				default:
+					formattedDate += "<sup>th</sup>";
+			}
+		}
+		
+		formattedDate += " " + months[date.getMonthValue() - 1] + " " + date.getYear();
+		
+		return formattedDate;
+	}
+	
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
