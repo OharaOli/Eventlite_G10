@@ -4,13 +4,23 @@
       layout:decorate="~{layouts/default}">
 <head>
   <title>Search Results</title>
+  <style>
+  	input {
+	  width: 83%;
+	  height: 30px;
+	  box-sizing: content-box;
+	}
+  </style>
 </head>
 <body>
 	<div layout:fragment="content">
 
 		<form action="#" th:action="@{search}" th:object="${v}" method="get">
-        	<input type="text" name="search" id="search" placeholder="Search venues ..." th:value="${search}"/>
-        	<button type="submit"><i class="fa fa-search"></i></button>
+          <input type="text" name="search" id="search" placeholder="Search for a venue..." th:value="${search}"/>
+            <button type="submit" class="btn btn-primary" style="margin-left:-5px;">
+        	  <i class="fa fa-search" aria-hidden="true"></i> Search</button>
+        	<button class="btn btn-secondary" style="margin-left:-5px;" onclick="document.getElementById('search').value = ''">
+    	      <i class="fa fa-ban" aria-hidden="true"></i> Clear</button>
     	</form>
 
 		<h1>Search Results:</h1>
@@ -21,7 +31,7 @@
 						<th><i class="fas fa-bolt"></i> Event</th>
 						<th><i class="fas fa-map-marker-alt"></i> Address</th>
 						<th><i class="fas fa-location-arrow"></i> Postcode</th>
-						<th><i class="fas fa-hashtag"></i> Capacity</th>
+						<th><i class="fas fa-warehouse"></i> Capacity</th>
 					</tr>
 				</thead>
 				<tbody>

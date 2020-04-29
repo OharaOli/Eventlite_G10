@@ -95,6 +95,19 @@ public class Event {
 		return formattedDate;
 	}
 	
+	public String getFormattedDate4Table() {
+		String formattedDate = "";
+		int dayOfMonth = date.getDayOfMonth();
+		final String[] months = {"January", "February", "March", "April", "May", "June", "July",
+								"August", "September", "October", "November", "December"};
+		final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+		
+		formattedDate += (days[date.getDayOfWeek().getValue() - 1] + ", " + dayOfMonth
+					     + " " + months[date.getMonthValue() - 1] + " " + date.getYear());
+		
+		return formattedDate;
+	}
+	
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}

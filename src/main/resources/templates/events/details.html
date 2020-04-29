@@ -45,11 +45,6 @@
 	  	<br>
 	  </section>
 	  <br>
-	  <div sec:authorize="isAuthenticated()">
-		<a class="btn btn-primary" role="button" th:href="@{/events/update/{num}(num=${event.get().id})}">Update</a >
-		<a th:href="@{/events/delete_event(eventId=${event.get().getId()})}" class="btn btn-danger">Delete</a>
-	  </div>
-	  
  	  <div id="map" style='height: 450px;'></div>
 	  <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
 	  <script type="text/javascript" th:inline="javascript">
@@ -90,7 +85,12 @@
             .setHTML('<h6>' + eventName + '</h6>'))
             .addTo(map);
 	  </script>
-	  
+	
+	  <br>
+	  <div sec:authorize="isAuthenticated()">
+		<a class="btn btn-primary" role="button" th:href="@{/events/update/{num}(num=${event.get().id})}">Update</a >
+		<a th:href="@{/events/delete_event(eventId=${event.get().getId()})}" class="btn btn-danger">Delete</a>
+	  </div>
 	  <br>
 	  <footer th:fragment="copy">&copy; 2020 G10</footer>	  
 	</div>
