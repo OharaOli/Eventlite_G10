@@ -36,7 +36,8 @@
 </head>
 <body>
   <div layout:fragment="content">    
-    <h1>Events</h1>
+ 
+    <h1><a href="/">EventLite</a> - Events</h1>
     
     <form action="#" th:action="@{events/search}" th:object="${e}" method="get">
       <input type="text" name="search" id="search" placeholder="Search for an event..." th:value="${s}"/>
@@ -120,7 +121,7 @@
        </script>
        
 	<br>
-    <div sec:authorize="isAuthenticated()">
+    <div sec:authorize="hasRole('ORGANISER')">
 		<a class="btn btn-primary" role="button" th:href="@{/events/add}">
 		  <i class="fas fa-plus" aria-hidden="true"></i> New Event</a>
   	</div>	

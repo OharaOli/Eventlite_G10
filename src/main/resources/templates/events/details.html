@@ -41,7 +41,8 @@
 	   	<p class="tab" th:if="${event.get().time} != null" th:utext="${'At ' + event.get().time + ' on '+ event.get().getFormattedDate()}">Event Time & Date</p>
 	   	<p class="tab" th:unless="${event.get().time} != null" th:utext="${'On ' + event.get().getFormattedDate()}">Event Date</p>
 	    <p class="tab" th:if="${event.get().getDescription()} != ''" th:text="${event.get().getDescription()}"}>Event Description</p>
-	  	<p class="tab"><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></p>
+    	<p class="tab"><a class="btn btn-primary" role="button" onClick="javascript:history.go(-1)" style="color:white">
+    		<i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></p>	  	
 	  	<br>
 	  </section>
 	  <br>
@@ -87,7 +88,7 @@
 	  </script>
 	
 	  <br>
-	  <div sec:authorize="isAuthenticated()">
+	  <div sec:authorize="hasRole('ORGANISER')">
 		<a class="btn btn-primary" role="button" th:href="@{/events/update/{num}(num=${event.get().id})}">Update</a >
 		<a th:href="@{/events/delete_event(eventId=${event.get().getId()})}" class="btn btn-danger">Delete</a>
 	  </div>

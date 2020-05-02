@@ -7,7 +7,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-  <h1>Create event</h1>
+  <h1>Create an event</h1>
   <form action="#" th:action="@{/events/add}" th:object="${event}" method="post">
   
     <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
@@ -44,6 +44,7 @@
     
     <div sec:authorize="isAuthenticated()">
       <button type="submit" class="btn btn-primary"><i class="far fa-edit" aria-hidden="true"></i>Create Event</button>
+      <a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
     </div>
   </form>
 </div>

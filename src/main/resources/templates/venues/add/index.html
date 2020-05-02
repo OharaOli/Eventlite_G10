@@ -7,7 +7,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-  <h1>Add venue</h1>
+  <h1>Create a venue</h1>
 
   <form action="#" th:action="@{/venues/add}" th:object="${venue}" method="post">
      
@@ -37,6 +37,7 @@
     
     <div sec:authorize="isAuthenticated()">
       <button type="submit" class="btn btn-primary"><i class="far fa-edit" aria-hidden="true"></i>Add Venue</button>
+      <a class="btn btn-warning" role="button" href="/venues"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
     </div>
   </form>
 
