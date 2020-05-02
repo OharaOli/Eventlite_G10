@@ -45,6 +45,25 @@
 	  	<br>
 	  </section>
 	  <br>
+	  
+ 
+	   <form action="#" th:action="@{/events/tweet}" th:object="${tweet}" method="post">
+  
+    	<div class="form-group" th:classappend="${#fields.hasErrors('text')}? has-error">
+      		<label for="text">Share the event!</label>
+      		<input type="text" class="form-control" id="text" name="text" placeholder="Event name" th:field="*{text}">
+      		<p class='text-danger' th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Tweet Error</p>
+    	</div>
+    	
+    	<div sec:authorize="isAuthenticated()">
+      		<button type="submit" class="btn btn-primary">Send tweet</button>
+    	</div>
+  	  </form>
+  	  <br>
+	
+	
+	
+	  
  	  <div id="map" style='height: 450px;'></div>
 	  <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
 	  <script type="text/javascript" th:inline="javascript">
@@ -53,6 +72,8 @@
 	    var eventPostcode = [[${event.get().venue.getPostcode()}]].replace(/\s/g, '');
 	    var accessToken = "pk.eyJ1Ijoib2hhcmFvbGkiLCJhIjoiY2s4eWh3Y3hvMDI2dTNsb2hwd2xzOTJyOSJ9.mdslhuJlNO5EPaDc3fFACg"
 	    var urlToSend = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + eventPostcode + ".json?access_token=" + accessToken + ""
+	    
+	    document.getElementById("text").placeholder = eventName;
 
 	  	var data =$.ajax({
         	url: urlToSend,
