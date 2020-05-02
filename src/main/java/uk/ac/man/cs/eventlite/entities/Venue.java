@@ -6,6 +6,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Set;
 
 @Entity
@@ -114,18 +116,22 @@ public class Venue {
 		this.coordinates = coordinates;
 	}
 	
+	@JsonIgnore
 	public double getLatitude() {
 		return this.latitude;
 	}
 	
+	@JsonIgnore
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 	
+	@JsonIgnore
 	public double getLongitude() {
 		return this.longitude;
 	}
 	
+	@JsonIgnore
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}

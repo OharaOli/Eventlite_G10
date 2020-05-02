@@ -13,6 +13,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +34,12 @@ public class EventsControllerApi {
 
 		return eventToResource(eventService.findAll());
 	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public Resource<Event> getOneEvent(@PathVariable("id") long id) {
+
+		return eventToResource(eventService.findEventById(id).get());
+	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public Resources<Resource<Event>> getEventsByName(@RequestParam(value = "search", defaultValue = "") String eventSearch)
@@ -42,8 +49,10 @@ public class EventsControllerApi {
 	
 	private Resource<Event> eventToResource(Event event) {
 		Link selfLink = linkTo(EventsControllerApi.class).slash(event.getId()).withSelfRel();
-
-		return new Resource<Event>(event, selfLink);
+		Link venueLink = linkTo(EventsControllerApi.class).slash(event.getId()).slash("venue").withRel("venue");
+		Link eventLink = linkTo(EventsControllerApi.class).slash(event.getId()).withRel("event");
+		
+		return new Resource<Event>(event, selfLink, eventLink, venueLink);
 	}
 
 	private Resources<Resource<Event>> eventToResource(Iterable<Event> events) {

@@ -41,7 +41,7 @@ public class VenuesControllerApi {
 		
 	private Resource<Venue> venueToResource(Venue venue) {
 		Link selfLink = linkTo(VenuesControllerApi.class).slash(venue.getId()).withSelfRel();
-
+		
 		return new Resource<Venue>(venue, selfLink);
 	}
 	

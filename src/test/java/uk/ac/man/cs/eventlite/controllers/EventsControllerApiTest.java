@@ -11,9 +11,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.ac.man.cs.eventlite.testutil.MessageConverterUtil.getMessageConverters;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MockMvc;
+
+
+import static org.hamcrest.Matchers.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
+import java.util.Optional;
+
 
 import javax.servlet.Filter;
 
@@ -38,6 +46,17 @@ import uk.ac.man.cs.eventlite.EventLite;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
+
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.RequestParam;
+import uk.ac.man.cs.eventlite.dao.VenueService;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = EventLite.class)
@@ -89,9 +108,43 @@ public class EventsControllerApiTest {
 		mvc.perform(get("/api/events").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(handler().methodName("getAllEvents")).andExpect(jsonPath("$.length()", equalTo(2)))
 				.andExpect(jsonPath("$._links.self.href", endsWith("/api/events")))
-				.andExpect(jsonPath("$._embedded.events.length()", equalTo(1)));
+				.andExpect(jsonPath("$._embedded.events.length()", equalTo(1)))
+				.andExpect(jsonPath("$._embedded.events[0]._links.venue.href", not(empty())))
+				.andExpect(jsonPath("$._embedded.events[0]._links.venue.href", endsWith("events/0/venue")));
+
+		
 
 		verify(eventService).findAll();
+	}
+	
+	
+	@Test
+	public void getIndexWithOneEvent() throws Exception {
+		Event e = new Event();
+		Venue v = new Venue();
+		Long id = (long) 0;
+		e.setId(id);
+		e.setName("Event");
+		e.setDate(LocalDate.of(2020, 5, 2));
+		e.setTime(LocalTime.of(17, 30));
+		e.setVenue(v);
+		when(eventService.findEventById(e.getId())).thenReturn(Optional.of(e));
+		
+		mvc.perform(get("/api/events/0").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		.andExpect(handler().methodName("getOneEvent"))
+		.andExpect(jsonPath("$._links.self.href", endsWith("/api/events/0")))
+		.andExpect(jsonPath("$._links.venue.href",  endsWith("events/0/venue")))
+		.andExpect(jsonPath("$._links.event.href",  endsWith("events/0")))
+		.andExpect(jsonPath("$.date", equalTo("2020-05-02")))
+		.andExpect(jsonPath("$.time", equalTo("17:30:00")))
+		.andExpect(jsonPath("$.name", equalTo("Event")))
+		.andExpect(jsonPath("$.formattedDate", empty()));
+		
+
+
+		
+
+		verify(eventService).findEventById(id);
 	}
 	
 	@Test
