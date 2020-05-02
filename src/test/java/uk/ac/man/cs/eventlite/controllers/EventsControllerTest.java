@@ -197,7 +197,7 @@ public class EventsControllerTest {
 		verifyZeroInteractions(event);			
 	}
 	
-	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
 	public void updateEvent() throws Exception
 	{
 		when(eventService.findOne(0)).thenReturn(event);
@@ -212,7 +212,7 @@ public class EventsControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
 	public void updateEventInvalid() throws Exception
 	{
 		when(eventService.findOne(0)).thenReturn(null);
@@ -228,7 +228,7 @@ public class EventsControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
 	public void updateEventNoName() throws Exception
 	{
 		when(eventService.findOne(0)).thenReturn(null);

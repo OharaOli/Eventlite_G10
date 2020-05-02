@@ -15,7 +15,6 @@ public interface VenueService{
 	
 	public Venue findOne(long id);
 
-	
 	public Venue save(Venue venue);
 	
 	public Optional<Venue> findVenueById(Long id);
@@ -26,5 +25,6 @@ public interface VenueService{
 	
 	public Iterable<Venue> findSearchedBy(String search);
 
-	
+	public Iterable<Venue> sortByNoOfEventsDesc();
+
 }

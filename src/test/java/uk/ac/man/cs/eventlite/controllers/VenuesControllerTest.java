@@ -91,7 +91,6 @@ public class VenuesControllerTest {
 	public void deleteExistingVenue() throws Exception {
 		Long id = (long) 1 ;
 		Optional<Venue> testVenue = Optional.of(venue) ;
-		Venue otherVenue = new Venue() ;
 		
 		List<Event> eventsList = new ArrayList<Event>() ;
 		eventsList.add(event) ;
@@ -216,7 +215,7 @@ public class VenuesControllerTest {
 	}	
 	
 	@Test
-	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
 	public void updateVenue() throws Exception
 	{
 		when(venueService.findOne(0)).thenReturn(venue);
@@ -231,7 +230,7 @@ public class VenuesControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
 	public void updateVenueInvalid() throws Exception
 	{
 		when(venueService.findOne(0)).thenReturn(null);
@@ -247,7 +246,7 @@ public class VenuesControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username="admin", roles= {"ADMINISTRATOR"})
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
 	public void updateVenueNoName() throws Exception
 	{
 		when(venueService.findOne(0)).thenReturn(null);
