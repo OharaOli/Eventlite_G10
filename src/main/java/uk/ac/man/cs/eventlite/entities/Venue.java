@@ -48,10 +48,12 @@ public class Venue {
 	public Venue() {
 	}
 
+	@JsonIgnore
 	public long getId() {
 		return id;
 	}
 
+	@JsonIgnore
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -100,18 +102,22 @@ public class Venue {
 		return events.contains(event) ;
 	}
 	
+	@JsonIgnore
 	public String getDescription() {
 		return description;
 	}
 
+	@JsonIgnore
 	public void setDescription(String desc) {
 		this.description = desc;
 	}
 	
+	@JsonIgnore
 	public String getCoordonates() {
 		return coordinates;
 	}
 
+	@JsonIgnore
 	public void setCoordonates(String coordinates) {
 		this.coordinates = coordinates;
 	}

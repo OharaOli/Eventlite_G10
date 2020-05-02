@@ -29,6 +29,7 @@ public class Event {
 	@GeneratedValue
 	private long id;
 
+	@JsonIgnore
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@Size(max = 499, message = "Description must be less than 500 characters.")
 	private String description;

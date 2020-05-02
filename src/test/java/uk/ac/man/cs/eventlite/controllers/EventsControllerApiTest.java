@@ -137,8 +137,7 @@ public class EventsControllerApiTest {
 		.andExpect(jsonPath("$._links.event.href",  endsWith("events/0")))
 		.andExpect(jsonPath("$.date", equalTo("2020-05-02")))
 		.andExpect(jsonPath("$.time", equalTo("17:30:00")))
-		.andExpect(jsonPath("$.name", equalTo("Event")))
-		.andExpect(jsonPath("$.formattedDate", empty()));
+		.andExpect(jsonPath("$.name", equalTo("Event")));
 		
 
 
