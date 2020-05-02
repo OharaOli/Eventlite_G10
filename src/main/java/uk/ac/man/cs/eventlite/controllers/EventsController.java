@@ -158,10 +158,11 @@ public class EventsController {
 	    return "redirect:/events";
 	}
 	
-	@RequestMapping(value="/tweet", method = RequestMethod.POST)
-	public String newTweet(Model model, @ModelAttribute("tweet") Tweet tweet) throws TwitterException {
+	@RequestMapping(value="/tweet/{id}", method = RequestMethod.POST)
+	public String newTweet(@RequestBody @Valid @ModelAttribute("tweet") Tweet tweet,
+			BindingResult errors, Model model, @PathVariable Long id,
+			RedirectAttributes redirectAttrs) throws TwitterException {
 		
-		log.info("In send twitter try");
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 		  .setOAuthConsumerKey("I8uQvkttsHY61PSnBPy9Re83I")
@@ -171,28 +172,22 @@ public class EventsController {
 		TwitterFactory tf = new TwitterFactory(cb.build());
 		Twitter twitter = tf.getInstance();
 		
-//		Status status = twitter.updateStatus(tweet.getText());
+		if (errors.hasErrors()) {
+	    	model.addAttribute("tweet", tweet);
+	        return "redirect:/events/{id}";
+	    }
+		
 		try {
-			log.info("In send twitter try");
 			Status status = twitter.updateStatus(tweet.getText());
-			return "redirect:/events";
+			String tweetMade = status.getText();
+			redirectAttrs.addFlashAttribute("tweetMade", tweetMade);
+			redirectAttrs.addFlashAttribute("ok_message", true);
+			return "redirect:/events/{id}";
 		} catch (TwitterException e) {
      		e.printStackTrace();
 			return "redirect:/events";
 		}
-		
-	    //System.out.println("Successfully updated the status to [" + status.getText() + "].");
-
-		//model.addAttribute("tweet", new Tweet());
-//		try {
-//			String tweetMade = Twitter4j.createTweet(tweetText);
-//			return "events/details/index/{id}";
-//		catch (TwitterException e) {
-//			e.printStackTrace();
-//			return "events/";
-//		}
-//		}
-		//return "events/index";
 	}
+
 
 }
