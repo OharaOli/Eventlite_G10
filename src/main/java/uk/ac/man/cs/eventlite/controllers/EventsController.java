@@ -37,8 +37,15 @@ import uk.ac.man.cs.eventlite.config.data.InitialDataLoader;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
-
+import uk.ac.man.cs.eventlite.entities.Tweet;
 import uk.ac.man.cs.eventlite.entities.UpdateEvent;
+
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
+
 
 @Controller
 @RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
@@ -120,6 +127,7 @@ public class EventsController {
 
 		Optional<Event> event = eventService.findEventById(id);
 		model.addAttribute("event", event);
+		model.addAttribute("tweet", new Tweet());
 
 		return "events/details";
 	}	
@@ -180,5 +188,37 @@ public class EventsController {
 	    this.eventService.save(event);
 	    return "redirect:/events";
 	}
+	
+	@RequestMapping(value="/tweet/{id}", method = RequestMethod.POST)
+	public String newTweet(@RequestBody @Valid @ModelAttribute("tweet") Tweet tweet,
+			BindingResult errors, Model model, @PathVariable Long id,
+			RedirectAttributes redirectAttrs) throws TwitterException {
+		
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setDebugEnabled(true)
+		  .setOAuthConsumerKey("I8uQvkttsHY61PSnBPy9Re83I")
+		  .setOAuthConsumerSecret("MyFaQ0KR0AsZ3cNJxk6a3fl27HtHEvCTeBigOc9Sunk3VyYVQi")
+		  .setOAuthAccessToken("1252996199390601221-F1RqpAKQ7ZY6iUyJqiCQDREmavl7EV")
+		  .setOAuthAccessTokenSecret("m7r7ypo7wpiKu9CF88qGClwBtQ6bQxSoI1V8Jpg5t4pL7");
+		TwitterFactory tf = new TwitterFactory(cb.build());
+		Twitter twitter = tf.getInstance();
+		
+		if (errors.hasErrors()) {
+	    	model.addAttribute("tweet", tweet);
+	        return "redirect:/events/{id}";
+	    }
+		
+		try {
+			Status status = twitter.updateStatus(tweet.getText());
+			String tweetMade = status.getText();
+			redirectAttrs.addFlashAttribute("tweetMade", tweetMade);
+			redirectAttrs.addFlashAttribute("ok_message", true);
+			return "redirect:/events/{id}";
+		} catch (TwitterException e) {
+     		e.printStackTrace();
+			return "redirect:/events";
+		}
+	}
+
 
 }
