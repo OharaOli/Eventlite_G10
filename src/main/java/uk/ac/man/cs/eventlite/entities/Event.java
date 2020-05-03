@@ -18,6 +18,7 @@ import javax.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "events")
@@ -28,6 +29,7 @@ public class Event {
 	@GeneratedValue
 	private long id;
 
+	@JsonIgnore
 	@Size(max = 499, message = "Description must be less than 500 characters.")
 	private String description;
 	
@@ -64,6 +66,7 @@ public class Event {
 		return date;
 	}
 
+	@JsonIgnore
 	public String getFormattedDate() {
 		String formattedDate = "";
 		int dayOfMonth = date.getDayOfMonth();
@@ -95,6 +98,7 @@ public class Event {
 		return formattedDate;
 	}
 	
+	@JsonIgnore
 	public String getFormattedDate4Table() {
 		String formattedDate = "";
 		int dayOfMonth = date.getDayOfMonth();

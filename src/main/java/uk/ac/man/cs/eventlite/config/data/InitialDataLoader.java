@@ -40,10 +40,8 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			venueA.setPostcode("E14 3BD");
 			venueA.setCapacity(100);
 			venueA.setDescription("This is a venue");
-			venueA.setCoordonates("M144AL");
 			venueService.save(venueA);
 			
-
 			Venue venueB = new Venue() ;
 			venueB.setName("Venue B");
 			venueB.setAddress("Highland Road");
