@@ -6,6 +6,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Set;
 
 @Entity
@@ -46,10 +48,12 @@ public class Venue {
 	public Venue() {
 	}
 
+	@JsonIgnore
 	public long getId() {
 		return id;
 	}
 
+	@JsonIgnore
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -98,34 +102,42 @@ public class Venue {
 		return events.contains(event) ;
 	}
 	
+	@JsonIgnore
 	public String getDescription() {
 		return description;
 	}
 
+	@JsonIgnore
 	public void setDescription(String desc) {
 		this.description = desc;
 	}
 	
+	@JsonIgnore
 	public String getCoordonates() {
 		return coordinates;
 	}
 
+	@JsonIgnore
 	public void setCoordonates(String coordinates) {
 		this.coordinates = coordinates;
 	}
 	
+	@JsonIgnore
 	public double getLatitude() {
 		return this.latitude;
 	}
 	
+	@JsonIgnore
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 	
+	@JsonIgnore
 	public double getLongitude() {
 		return this.longitude;
 	}
 	
+	@JsonIgnore
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}

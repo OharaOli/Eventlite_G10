@@ -85,7 +85,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			event1.setDate(date8);
 			event1.setTime(time2);
 			event1.setVenue(venueA);
-			event1.setDescription("Event Apple will be host to some of the world’s best iOS developers...");
+			event1.setDescription("Event Apple will be host to some of the world's best iOS developers...");
 			eventService.save(event1);
 			
 			// Example event 2.
