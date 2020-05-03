@@ -66,6 +66,22 @@
       </tbody>
     </table>
     
+    <h2>Twitter feed</h2>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th><i class="fas fa-calendar"></i> Date</th>
+          <th><i class="fas fa-bolt"></i>Tweet</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="t : ${tweets}">
+          <td th:text="${{t.getCreatedAt().toString()}}">Tweet date</td>
+          <td> <a th:href="@{https://twitter.com/eventliteg10_20/status/{tweetId}(tweetId=${{t.getId()}})}" th:text="${{t.getText()}}">Tweet body</a></td>
+        </tr>
+      </tbody>
+    </table>
+    
       <div id="map" style='height: 450px;'>	  </div>
 	  <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
 	  <script type="text/javascript" th:inline="javascript">

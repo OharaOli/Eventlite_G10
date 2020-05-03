@@ -1,6 +1,10 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -24,6 +28,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
 import uk.ac.man.cs.eventlite.config.data.InitialDataLoader;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
@@ -44,15 +53,37 @@ public class EventsController {
 	private VenueService venueService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String getAllEvents(Model model) {
+	public String getAllEvents(Model model) throws TwitterException {
 		
 		model.addAttribute("prevEvents", eventService.findAllPreviousEvents());
 		model.addAttribute("futureEvents", eventService.findAllFutureEvents());
-
+		model = getLatestTweets(model) ;
+		
 		return "events/index";
 	}
-	
 
+	public Model getLatestTweets(Model model) throws TwitterException {
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setDebugEnabled(true)
+		  .setOAuthConsumerKey("I8uQvkttsHY61PSnBPy9Re83I")
+		  .setOAuthConsumerSecret("MyFaQ0KR0AsZ3cNJxk6a3fl27HtHEvCTeBigOc9Sunk3VyYVQi")
+		  .setOAuthAccessToken("1252996199390601221-F1RqpAKQ7ZY6iUyJqiCQDREmavl7EV")
+		  .setOAuthAccessTokenSecret("m7r7ypo7wpiKu9CF88qGClwBtQ6bQxSoI1V8Jpg5t4pL7");
+		TwitterFactory tf = new TwitterFactory(cb.build());
+		Twitter twitter = tf.getInstance();
+		
+		List<Status> allTweets = twitter.getHomeTimeline() ;
+		
+		List<Status> latestTweets = new ArrayList<Status>();
+		
+		for (int i = 0; i < 5; i++)
+			latestTweets.add(allTweets.get(i)) ;
+		
+		model.addAttribute("tweets", (Iterable<Status>) latestTweets) ;
+		
+		return model ;
+	}
+	
 	@RequestMapping(value = "/delete_event", method = RequestMethod.GET)
 	public String deleteEvent(@RequestParam(name="eventId") Long id) {
 		if (eventService.findById(id).isPresent())
