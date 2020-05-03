@@ -1,10 +1,9 @@
 package uk.ac.man.cs.eventlite.dao;
 
-import java.time.LocalDate;
-
 import java.util.Optional;
 
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 public interface EventService {
 
@@ -33,5 +32,7 @@ public interface EventService {
 	public void deleteById(Long id);
 	
 	public Optional<Event> findById(Long id);
+	
+	public Iterable<Event> findFirst3UpcomingEventsByVenue(Venue venue);
 
 }

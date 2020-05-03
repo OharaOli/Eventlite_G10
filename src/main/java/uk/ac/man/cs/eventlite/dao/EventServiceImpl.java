@@ -1,16 +1,17 @@
 package uk.ac.man.cs.eventlite.dao;
 
-
 import java.util.Optional;
 import java.time.LocalDate;
-import java.util.Optional;
+import java.time.LocalTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -33,16 +34,12 @@ public class EventServiceImpl implements EventService {
     }
 	
 	@Override
-    public void update(Event event)
-    {
+    public void update(Event event) {
         eventRepository.save(event);
     }
 	
-
-	
 	@Override
-    public Event save(Event event)
-    {
+    public Event save(Event event) {
 		return eventRepository.save(event);
     }
 	
@@ -62,17 +59,17 @@ public class EventServiceImpl implements EventService {
 	} 
 	
 	@Override
-	public Iterable<Event> findBySearchedBy(String search){
+	public Iterable<Event> findBySearchedBy(String search) {
 		return eventRepository.findAllByNameContainsIgnoreCase(search);
 	}
 	
 	@Override
-	public Iterable<Event> findFutureSearchedBy(String search){
+	public Iterable<Event> findFutureSearchedBy(String search) {
 		return eventRepository.findAllByDateAfterAndNameContainsIgnoreCase(LocalDate.now(),search);
 	}
 	
 	@Override
-	public Iterable<Event> findPastSearchedBy(String search){
+	public Iterable<Event> findPastSearchedBy(String search) {
 		return eventRepository.findAllByDateBeforeAndNameContainsIgnoreCase(LocalDate.now(),search);
 	}
 		
@@ -89,6 +86,11 @@ public class EventServiceImpl implements EventService {
 	public Optional<Event> findById(Long id) {
 		return eventRepository.findById(id) ;
 	}
-		
+
+	@Override
+	public Iterable<Event> findFirst3UpcomingEventsByVenue(Venue venue) {
+		return eventRepository.findByNotEarlierThanDateTimeByVenueIdOrderByDateAsc(LocalDate.now(), 
+				LocalTime.now(), venue, PageRequest.of(0, 3));
+	}
 }
 

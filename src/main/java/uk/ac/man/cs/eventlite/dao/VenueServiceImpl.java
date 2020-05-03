@@ -1,5 +1,6 @@
 package uk.ac.man.cs.eventlite.dao;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +41,6 @@ public class VenueServiceImpl implements VenueService {
         venueRepository.save(venue);
     }
 
-
 	@Override
 	public Venue save(Venue venue) {
 		return venueRepository.save(venue);
@@ -69,11 +69,35 @@ public class VenueServiceImpl implements VenueService {
 	
 	@Override
 	public void deleteById(Long id) {
-		venueRepository.deleteById(id) ;
+		venueRepository.deleteById(id);
 	}
 	
 	@Override
 	public Iterable<Venue> findSearchedBy(String search){
 		return venueRepository.findAllByNameContainsIgnoreCase(search);
 	}
+	
+	@Override
+	public Iterable<Venue> sortByNoOfEventsDesc() {
+		
+		class VenueComparator implements Comparator<Venue> 
+		{
+			@Override
+			public int compare(Venue v1, Venue v2) {
+				if (v1.getEvents().size() == v2.getEvents().size())
+					return v1.getName().compareTo(v2.getName());
+				else
+					return v2.getEvents().size() - v1.getEvents().size();
+			}
+		}
+
+		Iterable<Venue> allVenues = venueRepository.findAll();
+		List<Venue> venueList = new ArrayList<>();
+		for (Venue v : allVenues)
+			venueList.add(v);
+		venueList.sort(new VenueComparator());
+
+		return venueList;
+	}
+	
 }

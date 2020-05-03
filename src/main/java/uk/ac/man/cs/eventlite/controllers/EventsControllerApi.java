@@ -12,7 +12,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,23 +46,33 @@ public class EventsControllerApi {
 	{
 		return eventToResource(eventService.findBySearchedBy(eventSearch));
 	}
-	
-	private Resource<Event> eventToResource(Event event) {
+
+	public static Resource<Event> eventToResource(Event event) {
 		Link selfLink = linkTo(EventsControllerApi.class).slash(event.getId()).withSelfRel();
-		Link venueLink = linkTo(EventsControllerApi.class).slash(event.getId()).slash("venue").withRel("venue");
 		Link eventLink = linkTo(EventsControllerApi.class).slash(event.getId()).withRel("event");
-		
+		Link venueLink = linkTo(EventsControllerApi.class).slash(event.getId()).slash("venue").withRel("venue");
+
 		return new Resource<Event>(event, selfLink, eventLink, venueLink);
 	}
 
-	private Resources<Resource<Event>> eventToResource(Iterable<Event> events) {
+	public static Resources<Resource<Event>> eventToResource(Iterable<Event> events, Link link) {
+		List<Resource<Event>> resources = new ArrayList<Resource<Event>>();
+		for (Event event : events) {
+			resources.add(eventToResource(event));
+		}
+
+		return new Resources<Resource<Event>>(resources, link);
+	}	
+	
+	public Resources<Resource<Event>> eventToResource(Iterable<Event> events) {
 		Link selfLink = linkTo(methodOn(EventsControllerApi.class).getAllEvents()).withSelfRel();
 
 		List<Resource<Event>> resources = new ArrayList<Resource<Event>>();
 		for (Event event : events) {
 			resources.add(eventToResource(event));
 		}
-
+		
 		return new Resources<Resource<Event>>(resources, selfLink);
 	}
+	
 }

@@ -5,7 +5,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -29,7 +28,6 @@ public class Event {
 	@GeneratedValue
 	private long id;
 
-	@JsonIgnore
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@Size(max = 499, message = "Description must be less than 500 characters.")
 	private String description;

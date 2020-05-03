@@ -68,7 +68,7 @@ public class EventsController {
 		
 		return "events/index";
 	}
-
+	
 	public Model getLatestTweets(Model model) throws TwitterException {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
@@ -76,6 +76,7 @@ public class EventsController {
 		  .setOAuthConsumerSecret("MyFaQ0KR0AsZ3cNJxk6a3fl27HtHEvCTeBigOc9Sunk3VyYVQi")
 		  .setOAuthAccessToken("1252996199390601221-F1RqpAKQ7ZY6iUyJqiCQDREmavl7EV")
 		  .setOAuthAccessTokenSecret("m7r7ypo7wpiKu9CF88qGClwBtQ6bQxSoI1V8Jpg5t4pL7");
+		
 		TwitterFactory tf = new TwitterFactory(cb.build());
 		Twitter twitter = tf.getInstance();
 		
@@ -83,8 +84,10 @@ public class EventsController {
 		
 		List<Status> latestTweets = new ArrayList<Status>();
 		
-		for (int i = 0; i < 5; i++)
-			latestTweets.add(allTweets.get(i)) ;
+		int size = Math.min(allTweets.size(), 5);
+
+		for (int i = 0; i < size; i++)
+			latestTweets.add(allTweets.get(i));
 		
 		model.addAttribute("tweets", (Iterable<Status>) latestTweets) ;
 		
@@ -98,8 +101,6 @@ public class EventsController {
 		
 		return "redirect:/events" ;
 	}
-
-		
 
 	@RequestMapping(value = "/add",method = RequestMethod.GET)
 	public String getAddEvents(Model model) {
@@ -177,7 +178,6 @@ public class EventsController {
 		return "redirect:/events";
 	} // updateEvent
 	
-	
 	@RequestMapping(value="/add",method = RequestMethod.POST)
 	public String createEvent(@RequestBody @Valid @ModelAttribute ("event") Event event, 
 			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
@@ -215,10 +215,9 @@ public class EventsController {
 			redirectAttrs.addFlashAttribute("ok_message", true);
 			return "redirect:/events/{id}";
 		} catch (TwitterException e) {
-     		e.printStackTrace();
-			return "redirect:/events";
+			redirectAttrs.addFlashAttribute("not_ok_message", true);
+			return "redirect:/events/{id}";
 		}
 	}
-
 
 }

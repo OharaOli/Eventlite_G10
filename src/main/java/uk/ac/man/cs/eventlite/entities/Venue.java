@@ -1,12 +1,12 @@
 package uk.ac.man.cs.eventlite.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Set;
 
@@ -26,10 +26,12 @@ public class Venue {
 	@Min(value = 1, message = "Venue must have a positive capacity")
 	private int capacity;
 	
+	@JsonIgnore
 	@NotEmpty(message = "Venue must have an address.")
 	@Size(max = 299, message = "The address must be less than 300 characters.")
 	private String address;
 	
+	@JsonIgnore
 	@NotEmpty(message = "Venue must have a postcode.")
 	@Size(max = 299, message = "The postcode must be less than 300 characters.")
 	private String postcode;
@@ -37,12 +39,13 @@ public class Venue {
 	@OneToMany(targetEntity=Event.class, mappedBy="venue")
 	private Set<Event> events;
 	
+	@JsonIgnore
 	private String description;
 	
-	private String coordinates;
-	
+	@JsonIgnore
 	private double latitude;
 	
+	@JsonIgnore
 	private double longitude;
 	
 	public Venue() {
@@ -111,18 +114,7 @@ public class Venue {
 	public void setDescription(String desc) {
 		this.description = desc;
 	}
-	
-	@JsonIgnore
-	public String getCoordonates() {
-		return coordinates;
-	}
 
-	@JsonIgnore
-	public void setCoordonates(String coordinates) {
-		this.coordinates = coordinates;
-	}
-	
-	@JsonIgnore
 	public double getLatitude() {
 		return this.latitude;
 	}

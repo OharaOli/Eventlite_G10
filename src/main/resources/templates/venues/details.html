@@ -21,8 +21,8 @@
 	    	<p class="tab" th:text="${venue.get().getAddress()}">Venue Address</p>
 	    	<p class="tab" th:text="${venue.get().getPostcode()}">Venue Postcode</p>
 	    	<p class="tab" th:text="${'Capacity: ' + venue.get().getCapacity()}">Venue Capacity</p>
-	  		<p class="tab"><a class="btn btn-primary" role="button" th:href="@{/venues}">
-	  		  <i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></p>
+	    	<p class="tab"><a class="btn btn-primary" role="button" onClick="javascript:history.go(-1)" style="color:white">
+	    		<i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></p>
 	  		<br>
 	  	</section>
 	  	<br>
@@ -46,7 +46,7 @@
 		  </tbody>
 	  	</table>
 	  </section>
-	  	<div sec:authorize="isAuthenticated()">
+	  	<div sec:authorize="hasRole('ORGANISER')">
 		  <a class="btn btn-primary" role="button" th:href="@{/venues/update/{num}(num=${venue.get().id})}">Update</a >
 		  <a th:href="@{/venues/delete_venue(venueId=${venue.get().getId()})}" class="btn btn-danger">Delete</a>
 	  	</div>

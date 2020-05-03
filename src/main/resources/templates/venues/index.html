@@ -18,6 +18,8 @@
 	  <div th:if="${deleteAlert}" class="alert alert-danger">
   	    Sorry! You are not allowed to delete a venue that has one or more events.
 	  </div>  
+	  
+	  <h1><a href="/">EventLite</a> - Venues</h1>
   
       <form action="#" th:action="@{venues/search}" th:object="${v}" method="get">
         <input type="text" name="search" id="search" placeholder="Search for a venue..." th:value="${s}"/>
@@ -26,31 +28,30 @@
         <button class="btn btn-secondary" style="margin-left:-5px;" onclick="document.getElementById('search').value = ''">
     	  <i class="fa fa-ban" aria-hidden="true"></i> Clear</button>
       </form>
-    
-     <h1>Venues</h1>
-			<table class="table table-striped table-hover">
-				<thead>
-					<tr>
-						<th><i class="fas fa-bolt"></i> Event</th>
-						<th><i class="fas fa-map-marker-alt"></i> Address</th>
-						<th><i class="fas fa-location-arrow"></i> Postcode</th>
-						<th><i class="fas fa-warehouse"></i> Capacity</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="v : ${allVenues}">
-       				   <td>
-      				    <a th:href="@{/venues/{num}(num=${v.id})}" th:text="${v.name}">My Venue</a></td>
-						<td th:text="${{v.address}}">Venue address</td>
-						<td th:text="${{v.postcode}}">Venue postcode</td>
-						<td th:text="${{v.capacity}}">Venue capacity</td>
-        			</tr>
-				</tbody>
-			</table>
+ 		<h2>All Venues</h2>
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th><i class="fas fa-map-marker-alt"></i> Venue</th>
+					<th><i class="fas fa-road"></i> Address</th>
+					<th><i class="fas fa-location-arrow"></i> Postcode</th>
+					<th><i class="fas fa-warehouse"></i> Capacity</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="v : ${allVenues}">
+				   <td>
+				    <a th:href="@{/venues/{num}(num=${v.id})}" th:text="${v.name}">My Venue</a></td>
+					<td th:text="${{v.address}}">Venue address</td>
+					<td th:text="${{v.postcode}}">Venue postcode</td>
+					<td th:text="${{v.capacity}}">Venue capacity</td>
+				</tr>
+			</tbody>
+		</table>
 			
-   	<div sec:authorize="isAuthenticated()">
-    <a class="btn btn-primary" role="button" th:href="@{/venues/add}">
-	  <i class="fas fa-plus" aria-hidden="true"></i> New Venue</a>
+   	<div sec:authorize="hasRole('ORGANISER')">
+	    <a class="btn btn-primary" role="button" th:href="@{/venues/add}">
+		  <i class="fas fa-plus" aria-hidden="true"></i> New Venue</a>
   	</div>
   	<br>
   	<footer th:fragment="copy">&copy; 2020 G10</footer>			
