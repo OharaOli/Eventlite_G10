@@ -6,15 +6,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.ac.man.cs.eventlite.testutil.MessageConverterUtil.getMessageConverters;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
-
+import java.util.List;
 import javax.servlet.Filter;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -53,6 +53,9 @@ public class VenuesControllerApiTest {
 	private Filter springSecurityFilterChain;
 
 	@Mock
+	private EventService eventService;
+	
+	@Mock
 	private VenueService venueService;
 
 	@InjectMocks
@@ -70,30 +73,30 @@ public class VenuesControllerApiTest {
 		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
 
 		mvc.perform(get("/api/venues").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(handler().methodName("getAllVenues")).andExpect(jsonPath("$.length()", equalTo(1)))
-				.andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")));
+			.andExpect(handler().methodName("getAllVenues")).andExpect(jsonPath("$.length()", equalTo(1)))
+			.andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")));
 
 		verify(venueService).findAll();
 	}
-
+	
 	@Test
-	public void getIndexWithVenues() throws Exception {
-		Event e = new Event();
+	 public void getIndexWithVenues() throws Exception {
 		Venue v = new Venue();
-		/*e.setId(0);
-		e.setName("Event");
-		e.setDate(LocalDate.now());
-		e.setTime(LocalTime.now());*/
-		e.setVenue(v);
+		v.setId(0);
+	  
 		when(venueService.findAll()).thenReturn(Collections.<Venue>singletonList(v));
 
 		mvc.perform(get("/api/venues").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(handler().methodName("getAllVenues")).andExpect(jsonPath("$.length()", equalTo(2)))
-				.andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")))
-				.andExpect(jsonPath("$._embedded.venues.length()", equalTo(1)));
+			.andExpect(handler().methodName("getAllVenues")).andExpect(jsonPath("$.length()", equalTo(2)))
+			.andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")))
+			.andExpect(jsonPath("$._links.profile.href", endsWith("/api/profile/venues")))
+			.andExpect(jsonPath("$._embedded.venues.length()", equalTo(1)))
+			.andExpect(jsonPath("$._embedded.venues[0]._links.venue.href", endsWith("venues/0")))
+			.andExpect(jsonPath("$._embedded.venues[0]._links.events.href", endsWith("venues/0/events")))
+			.andExpect(jsonPath("$._embedded.venues[0]._links.next3events.href", endsWith("venues/0/next3events")));
 
 		verify(venueService).findAll();
-	}
+	 }	
 	
 	@Test
 	public void getSearchIndexWhenNoVenues() throws Exception {
@@ -101,8 +104,8 @@ public class VenuesControllerApiTest {
 		when(venueService.findSearchedBy(testSearch)).thenReturn(Collections.<Venue> emptyList());
 
 		mvc.perform(get("/api/venues/search?search=HHHHHHHHHHH").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(handler().methodName("getVenuesByName")).andExpect(jsonPath("$.length()", equalTo(1)))
-				.andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")));
+			.andExpect(handler().methodName("getVenuesByName")).andExpect(jsonPath("$.length()", equalTo(1)))
+			.andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")));
 
 		verify(venueService).findSearchedBy(testSearch);
 	}
@@ -119,10 +122,35 @@ public class VenuesControllerApiTest {
 		when(venueService.findSearchedBy(testSearch)).thenReturn(Collections.<Venue>singletonList(v));
 
 		mvc.perform(get("/api/venues/search?search=venue").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(handler().methodName("getVenuesByName")).andExpect(jsonPath("$.length()", equalTo(2)))
-				.andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")))
-				.andExpect(jsonPath("$._embedded.venues.length()", equalTo(1)));
+			.andExpect(handler().methodName("getVenuesByName")).andExpect(jsonPath("$.length()", equalTo(2)))
+			.andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")))
+			.andExpect(jsonPath("$._embedded.venues.length()", equalTo(1)));
 
 		verify(venueService).findSearchedBy(testSearch);
 	}
+	
+	@Test
+	public void getNext3EventsOfVenue() throws Exception {
+		long v_id = 1;
+		
+		Venue v = new Venue();
+		v.setId(v_id);
+		v.setName("test venue");
+		
+		Event e = new Event();
+		e.setName("test event");
+		e.setVenue(v);
+		
+		when(venueService.findOne(v_id)).thenReturn(v);
+		when(eventService.findFirst3UpcomingEventsByVenue(v)).thenReturn(List.of(e));
+		
+		mvc.perform(get("/api/venues/{id}/next3events", v_id).accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+			.andExpect(handler().methodName("getNext3Events"))
+			.andExpect(jsonPath("$._embedded.events[0].name", equalTo("test event")))
+			.andExpect(jsonPath("$._embedded.events.length()", equalTo(1)))
+			.andExpect(jsonPath("$._links.self.href", endsWith("/venues/" + v_id + "/next3events")));
+	}
+
 }
