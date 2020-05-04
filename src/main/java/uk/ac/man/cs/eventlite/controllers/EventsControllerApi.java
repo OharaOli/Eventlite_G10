@@ -5,6 +5,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -37,7 +38,6 @@ public class EventsControllerApi {
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Resource<Event> getOneEvent(@PathVariable("id") long id) {
-
 		return eventToResource(eventService.findEventById(id).get());
 	}
 

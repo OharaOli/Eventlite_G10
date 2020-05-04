@@ -5,6 +5,9 @@
 <head>
   <title layout:title-pattern="$LAYOUT_TITLE: $CONTENT_TITLE">EventLite</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  
+  <meta name="_csrf" id="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" id="_csrf_header" th:content="${_csrf.headerName}"/>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />

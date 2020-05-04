@@ -4,6 +4,9 @@
       layout:decorate="~{layouts/default}">
 <head>
   <title>Sign in</title>
+  
+  <meta name="_csrf" id="_csrf" th:content="${_csrf.token}"/>
+
 </head>
 <body>
   <div layout:fragment="content">

@@ -21,8 +21,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 
+import java.util.Collections;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.boot.web.server.LocalServerPort;
+import uk.ac.man.cs.eventlite.EventLite;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -127,10 +143,14 @@ public class EventsController {
 		@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
 
 		Optional<Event> event = eventService.findEventById(id);
-		model.addAttribute("event", event);
-		model.addAttribute("tweet", new Tweet());
-
-		return "events/details";
+		if (event == null)
+			return "redirect:/urlNotExist";
+		else {
+			model.addAttribute("event", event);
+			model.addAttribute("tweet", new Tweet());
+	
+			return "events/details";
+		}
 	}	
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
@@ -181,7 +201,7 @@ public class EventsController {
 	@RequestMapping(value="/add",method = RequestMethod.POST)
 	public String createEvent(@RequestBody @Valid @ModelAttribute ("event") Event event, 
 			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
-	    if (errors.hasErrors()) {
+		if (errors.hasErrors() || event == null) {
 	    	model.addAttribute("event", event);
 	        return "events/add/index";
 	    }

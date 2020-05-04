@@ -47,6 +47,7 @@ public class Event {
 	private String name;
 
 	@ManyToOne
+	@NotNull(message = "Event must have a venue.")
 	@JoinColumn(name = "Venue_id")
 	private Venue venue;
 	
