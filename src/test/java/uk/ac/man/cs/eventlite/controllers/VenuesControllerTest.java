@@ -4,15 +4,20 @@ import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.Filter;
 
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -260,6 +265,64 @@ public class VenuesControllerTest {
 				.sessionAttr("venue", venue)
 				.param("description", "TEST"))
 				.andExpect(status().isMethodNotAllowed());
+	}
+	
+	@Test
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
+	public void addVenue() throws Exception
+	{	
+		mvc.perform(post("/venues/add").with(csrf())
+	            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+	            .content(EntityUtils.toString(new UrlEncodedFormEntity(Arrays.asList(
+	                    new BasicNameValuePair("name", "Test Venue 1"),
+	                    new BasicNameValuePair("address", "The Venue Address"),
+	                    new BasicNameValuePair("postcode", "M14 6AG"),
+	                    new BasicNameValuePair("capacity", "1200")
+	            )))))
+				.andExpect(view().name("redirect:/venues"))
+				.andExpect(status().isFound())
+				.andExpect(handler().methodName("createVenue"));
+	}
+	
+	@Test
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
+	public void addVenueInvalid() throws Exception
+	{
+		
+		mvc.perform(post("/venues/add").with(csrf())
+	            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+	            .content(EntityUtils.toString(new UrlEncodedFormEntity(Arrays.asList(
+	                    new BasicNameValuePair("name", "HUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+	                    								+ "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+	                    								+ "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+	                    								+ "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+	                    								+ "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+	                    								+ "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+	                    								+ "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+	                    								+ "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUGE"
+	                    								+ " NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAME"),
+
+
+	                    new BasicNameValuePair("address", "The Venue Address"),
+	                    new BasicNameValuePair("postcode", "M14 6AG"),
+	                    new BasicNameValuePair("capacity", "1200")
+	            )))))
+		.andExpect(view().name("venues/add/index"))
+		.andExpect(status().isOk())
+		.andExpect(handler().methodName("createVenue"));
+	}
+	
+	@Test
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
+	public void addEventNodata() throws Exception
+	{
+		mvc.perform(post("/venues/add").with(csrf())
+	            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+	            .content(EntityUtils.toString(new UrlEncodedFormEntity(Arrays.asList(
+	            )))))
+		.andExpect(view().name("venues/add/index"))
+		.andExpect(status().isOk())
+		.andExpect(handler().methodName("createVenue"));
 	}
 	
 }

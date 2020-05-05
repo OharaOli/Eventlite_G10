@@ -11,12 +11,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
 import javax.servlet.Filter;
 
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -136,6 +142,7 @@ public class EventsControllerTest {
 		verifyZeroInteractions(event);
 	}
 
+	@Test
 	public void getValidEventDetails() throws Exception {
 		Optional<Event> testEvent = Optional.of(event);
 		Long id = (long)1;
@@ -243,4 +250,50 @@ public class EventsControllerTest {
 		.andExpect(status().isMethodNotAllowed());
 	}
 		
+	@Test
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
+	public void addEvent() throws Exception
+	{	
+		mvc.perform(post("/events/add").with(csrf())
+	            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+	            .content(EntityUtils.toString(new UrlEncodedFormEntity(Arrays.asList(
+	                    new BasicNameValuePair("name", "Test Event 1"),
+	                    new BasicNameValuePair("date", "2023-05-05"),
+	                    new BasicNameValuePair("venue.id", "1"),
+	                    new BasicNameValuePair("time", "12:30")
+	            )))))
+				.andExpect(view().name("redirect:/events"))
+				.andExpect(status().isFound())
+				.andExpect(handler().methodName("createEvent"));
+	}
+	
+	@Test
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
+	public void addEventInvalid() throws Exception
+	{
+		mvc.perform(post("/events/add").with(csrf())
+	            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+	            .content(EntityUtils.toString(new UrlEncodedFormEntity(Arrays.asList(
+	                    new BasicNameValuePair("name", "Test Event 1"),
+	                    new BasicNameValuePair("date", "2019-05-05"),
+	                    new BasicNameValuePair("venue.id", "0"),
+	                    new BasicNameValuePair("time", "89:90")
+	            )))))
+				.andExpect(view().name("events/add/index"))
+				.andExpect(status().isOk())
+				.andExpect(handler().methodName("createEvent"));
+	}
+	
+	@Test
+	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
+	public void addEventNodata() throws Exception
+	{
+		mvc.perform(post("/events/add").with(csrf())
+	            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+	            .content(EntityUtils.toString(new UrlEncodedFormEntity(Arrays.asList(
+	            )))))
+				.andExpect(view().name("events/add/index"))
+				.andExpect(status().isOk())
+				.andExpect(handler().methodName("createEvent"));
+	}
 }
