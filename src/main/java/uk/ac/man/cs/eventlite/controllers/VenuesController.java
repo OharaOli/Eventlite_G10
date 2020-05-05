@@ -26,6 +26,7 @@ import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Venue;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Tweet;
 import uk.ac.man.cs.eventlite.entities.UpdateVenue;
 
 @Controller
@@ -39,19 +40,21 @@ public class VenuesController {
 	
 	@Autowired
 	private VenueService venueService;
-
+	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String getOneVenue(@PathVariable("id") long id,
 		@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
 
 		Optional<Venue> venue = venueService.findVenueById(id);
-		model.addAttribute("venue", venue);
 		
-		if (venue.isPresent()) {
+		if (venue == null)
+			return "redirect:/urlNotExist";
+		else {
+			model.addAttribute("venue", venue);
 			model.addAttribute("futureEvents", venueService.findUpcomingEvents(id));
+	
+			return "venues/details";
 		}
-
-		return "venues/details";
 	}	
 	
 	@RequestMapping(method = RequestMethod.GET)
@@ -112,7 +115,7 @@ public class VenuesController {
 	@RequestMapping(value="/add",method = RequestMethod.POST)
 	public String createVenue(@RequestBody @Valid @ModelAttribute ("venue") Venue venue, 
 			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
-	    if (errors.hasErrors()) {
+		if (errors.hasErrors() || venue == null) {
 	    	model.addAttribute("venue", venue);
 	        return "venues/add/index";
 	    }
