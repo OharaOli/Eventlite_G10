@@ -2,10 +2,13 @@ package uk.ac.man.cs.eventlite.controllers;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -16,6 +19,7 @@ import javax.servlet.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -33,6 +37,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import uk.ac.man.cs.eventlite.EventLite;
+import uk.ac.man.cs.eventlite.config.Security;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
@@ -213,22 +218,21 @@ public class VenuesControllerTest {
 		verify(venueService).findSearchedBy(venueSearch);
 		verifyZeroInteractions(venue);
 	}	
-	
+
 	@Test
-	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
-	public void updateVenue() throws Exception
-	{
-		when(venueService.findOne(0)).thenReturn(venue);
+	public void updateVenueNoCsrf() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/venues").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			.with(user("Organiser").roles(Security.ORGANISER_ROLE))
+			.param("id", "1").param("name", "test")
+			.param("address", "address")
+			.param("postcode", "postcode")
+			.param("capacity", "10")
+			.accept(MediaType.TEXT_HTML))
+			.andExpect(status().isForbidden());
+
+		verify(venueService, never()).save(venue);
+	}	
 		
-		mvc.perform(MockMvcRequestBuilders.patch("/venues/0").accept(MediaType.TEXT_HTML).with(csrf())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.param("name", "Test Venue 1")
-				.param("capacity", "100")
-				.param("coordonates", "12M AL")
-				.param("description", "Test Venue 1..."))
-		.andExpect(status().isMethodNotAllowed());
-	}
-	
 	@Test
 	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
 	public void updateVenueInvalid() throws Exception
@@ -236,30 +240,13 @@ public class VenuesControllerTest {
 		when(venueService.findOne(0)).thenReturn(null);
 		
 		mvc.perform(MockMvcRequestBuilders.patch("/venues/0").accept(MediaType.TEXT_HTML).with(csrf())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.param("capacity", "200")
-				.param("coordonates", "5A 7MN")
-				.param("name", "venue")
-				.sessionAttr("venue", venue)
-				.param("description", "TEST"))
+			.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+			.param("capacity", "200")
+			.param("coordonates", "5A 7MN")
+			.param("name", "venue")
+			.sessionAttr("venue", venue)
+			.param("description", "TEST"))
 		.andExpect(status().isMethodNotAllowed());
-	}
-	
-	@Test
-	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
-	public void updateVenueNoName() throws Exception
-	{
-		when(venueService.findOne(0)).thenReturn(null);
-		
-		mvc.perform(MockMvcRequestBuilders.patch("/venues/0").accept(MediaType.TEXT_HTML).with(csrf())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.param("id", "0")
-				.param("address", "address")
-				.param("postcode", "postcode")
-				.param("capacity", "300")
-				.sessionAttr("venue", venue)
-				.param("description", "TEST"))
-				.andExpect(status().isMethodNotAllowed());
 	}
 	
 }

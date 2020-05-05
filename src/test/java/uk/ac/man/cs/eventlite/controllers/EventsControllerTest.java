@@ -1,20 +1,29 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doNothing;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.mockito.Mockito.doNothing;
 
 import java.util.Collections;
 import java.util.Optional;
-
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import javax.servlet.Filter;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +44,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import uk.ac.man.cs.eventlite.EventLite;
+import uk.ac.man.cs.eventlite.config.Security;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
@@ -64,8 +73,8 @@ public class EventsControllerTest {
 	@Mock
 	private EventService eventService;
 
-//	@Mock
-//	private VenueService venueService;
+	@Mock
+	private VenueService venueService;
 
 	@InjectMocks
 	private EventsController eventsController;
@@ -109,8 +118,6 @@ public class EventsControllerTest {
 	}
 	
 	@Test
-
-
 	public void getSearchIndexWhenNoEvents() throws Exception {
 		String testSearch = new String("HHH");
 		when(eventService.findBySearchedBy(testSearch)).thenReturn(Collections.<Event> emptyList());
@@ -197,18 +204,80 @@ public class EventsControllerTest {
 		verifyZeroInteractions(event);			
 	}
 	
-	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
-	public void updateEvent() throws Exception
-	{
-		when(eventService.findOne(0)).thenReturn(event);
+	@Test
+	public void deleteEventNoAuth() throws Exception {
+		long id = 1;
+		mvc.perform(MockMvcRequestBuilders.delete("/events/{id}", id).accept(MediaType.TEXT_HTML)
+			.with(csrf())).andExpect(status().isFound())
+			.andExpect(header().string("Location", endsWith("/sign-in")));
+
+		verify(eventService, never()).deleteById(id);
+	}
+	
+	@Test
+	public void deleteEventBadRole() throws Exception {
+		long id = 2;
+		mvc.perform(MockMvcRequestBuilders.delete("/events/{id}", id).accept(MediaType.TEXT_HTML)
+			.with(user("Mustafa").roles("ATTENDEES")).with(csrf())).andExpect(status().isForbidden());
 		
-		mvc.perform(MockMvcRequestBuilders.patch("/events/0").accept(MediaType.TEXT_HTML).with(csrf())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.param("name", "Test Event 1")
-				.param("date", "2019-01-01")
-				.param("time", "12:30")
-				.param("description", "Test Event 1..."))
-		.andExpect(status().isMethodNotAllowed());
+		verify(eventService, never()).deleteById(id);
+	}
+	
+	@Test
+	public void deleteEventNoCsrf() throws Exception {
+		long id = 3;
+		mvc.perform(MockMvcRequestBuilders.delete("/events/{id}", id).accept(MediaType.TEXT_HTML)
+			.with(user("Mustafa").password("Mustafa").roles(Security.ORGANISER_ROLE)))
+			.andExpect(status().isForbidden());
+
+		verify(eventService, never()).deleteById(id);
+	}
+	
+	@Test
+	public void updateEventNoAuth() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/events").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			.param("name", "Event")
+			.param("id", "10")
+			.param("date", LocalDate.now().toString())
+			.param("time", LocalTime.now().toString())
+			.param("Venue_id", "10")
+			.param("description", "This event is...")
+			.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+			.andExpect(header().string("Location", endsWith("/sign-in")));
+
+		verify(eventService, never()).save(event);
+	}
+
+	@Test
+	public void updateEventBadRole() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/events").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			.with(user("Mustafa").roles("ATTENDEES"))
+			.param("name", "Event")
+			.param("id", "10")
+			.param("date", LocalDate.now().toString())
+			.param("time", LocalTime.now().toString())
+			.param("Venue_id", "10")
+			.param("description", "This event is...")
+			.accept(MediaType.TEXT_HTML).with(csrf()))
+			.andExpect(status().isForbidden());
+
+		verify(eventService, never()).save(event);
+	}	
+	
+	@Test
+	public void updateEventNoCsrf() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/events").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			.with(user("Organiser").roles(Security.ORGANISER_ROLE))
+			.param("name", "Event")
+			.param("id", "10")
+			.param("date", LocalDate.now().toString())
+			.param("time", LocalTime.now().toString())
+			.param("Venue_id", "10")
+			.param("description", "This event is...")
+			.accept(MediaType.TEXT_HTML))
+			.andExpect(status().isForbidden());
+
+		verify(eventService, never()).save(event);
 	}
 	
 	@Test
@@ -218,29 +287,29 @@ public class EventsControllerTest {
 		when(eventService.findOne(0)).thenReturn(null);
 		
 		mvc.perform(MockMvcRequestBuilders.patch("/events/0").accept(MediaType.TEXT_HTML).with(csrf())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.param("date", "2030-10-10")
-				.param("time", "12:00")
-				.param("name", "event")
-				.sessionAttr("venue", venue)
-				.param("description", "TEST"))
-		.andExpect(status().isMethodNotAllowed());
+			.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+			.param("date", "2030-10-10")
+			.param("time", "12:00")
+			.param("name", "event")
+			.sessionAttr("venue", venue)
+			.param("description", "TEST"))
+			.andExpect(status().isMethodNotAllowed());
 	}
 	
 	@Test
-	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
-	public void updateEventNoName() throws Exception
-	{
-		when(eventService.findOne(0)).thenReturn(null);
-		
-		mvc.perform(MockMvcRequestBuilders.patch("/events/0").accept(MediaType.TEXT_HTML).with(csrf())
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.param("date", "2030-10-10")
-				.param("time", "12:00")
-				.param("name", "")
-				.sessionAttr("venue", venue)
-				.param("description", "TEST"))
-		.andExpect(status().isMethodNotAllowed());
-	}
-		
+	public void postEventBadRole() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles("ATTENDEES"))
+			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			.param("name", "Event")
+			.param("id", "8")
+			.param("date", (LocalDate.now().plus(1, ChronoUnit.DAYS)).toString())
+			.param("time", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")))
+			.param("Venue_id", "88")
+			.param("description", "This event is...")
+			.accept(MediaType.TEXT_HTML).with(csrf()))
+			.andExpect(status().isForbidden());
+
+		verify(eventService, never()).save(event);
+	}	
+	
 }
