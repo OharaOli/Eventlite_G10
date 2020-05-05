@@ -153,4 +153,31 @@ public class VenuesControllerApiTest {
 			.andExpect(jsonPath("$._links.self.href", endsWith("/venues/" + v_id + "/next3events")));
 	}
 
+	@Test
+	public void getAVenue() throws Exception {
+		long id = 10;
+		
+		Venue v = new Venue();
+		v.setId(id);
+		v.setName("Test Venue");
+		v.setAddress("Test Road");
+		v.setPostcode("Test Postcode");
+		v.setCapacity(50);
+		
+		when(venueService.findOne(id)).thenReturn(v);
+		
+		Event e = new Event();
+		e.setId(11);
+		e.setVenue(v);
+
+		mvc.perform(get("/api/venues/{id}", id).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(handler().methodName("getOneVenue"))
+				.andExpect(jsonPath("$.name", equalTo("Test Venue")))
+				.andExpect(jsonPath("$._links.self.href", endsWith("/venues/" + id)))
+				.andExpect(jsonPath("$._links.venue.href", endsWith("/venues/" + id)))
+				.andExpect(jsonPath("$._links.events.href", endsWith("/events")));
+		verify(venueService).findOne(id);
+	}	
+	
 }

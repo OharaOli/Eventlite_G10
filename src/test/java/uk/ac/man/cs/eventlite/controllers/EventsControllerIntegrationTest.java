@@ -1,6 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.Collections;
@@ -22,16 +23,13 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
-
-
-import org.springframework.boot.web.server.LocalServerPort;
-import uk.ac.man.cs.eventlite.EventLite;
-import static org.hamcrest.Matchers.containsString;
-
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.boot.test.web.client.TestRestTemplate.HttpClientOption;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import uk.ac.man.cs.eventlite.EventLite;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = EventLite.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -92,11 +90,11 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 		ResponseEntity<String> response = anonymous.exchange(addEventURL, HttpMethod.POST, postEntity, String.class);
 		
 		//count the number of events
-		int count = countRowsInTable("Events");
+		int count = countRowsInTable("events");
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.FOUND));
 		assertThat(response.getHeaders().getLocation().toString(), equalTo(loginUrl));
-		assertThat(count, equalTo(countRowsInTable("Events")));
+		assertThat(count, equalTo(countRowsInTable("events")));
 	}
 	
 	@Test
@@ -141,13 +139,13 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 		form.add("_csrf", csrfToken);
 		postEntity = new HttpEntity<MultiValueMap<String, String>>(form, postHeaders);
 		
-		int count = countRowsInTable("Events");
+		int count = countRowsInTable("events");
 
 		ResponseEntity<String> response = state.exchange(addEventURL, HttpMethod.POST, postEntity, String.class);
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		//there should not be more events stored than before
-		assertThat(count, equalTo(countRowsInTable("Events")));
+		assertThat(count, equalTo(countRowsInTable("events")));
 	}
 	
 	@Test
@@ -195,17 +193,17 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 		form.add("venue", "0");
 		postEntity = new HttpEntity<MultiValueMap<String, String>>(form, postHeaders);
 		
-		int count = countRowsInTable("Events");
+		int count = countRowsInTable("events");
 
 		ResponseEntity<String> response = state.exchange(addEventURL, HttpMethod.POST, postEntity, String.class);
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		assertThat(count, equalTo(countRowsInTable("Events")));
+		assertThat(count, equalTo(countRowsInTable("events")));
 	}
 	
 	@Test
 	@DirtiesContext
-	public void addEventWithLogin() {
+	public void getAndPostEventWithLogin() {
 		state = new TestRestTemplate(HttpClientOption.ENABLE_COOKIES);
 
 		HttpHeaders getHead = new HttpHeaders();
@@ -250,13 +248,13 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 		form.add("venue", "3");
 		postEntity = new HttpEntity<MultiValueMap<String, String>>(form, postHeaders);
 		
-		int count = countRowsInTable("Events");
+		int count = countRowsInTable("events");
 
 		ResponseEntity<String> response = state.exchange(addEventURL, HttpMethod.POST, postEntity, String.class);
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.FOUND));
 		assertThat(response.getHeaders().getLocation().toString(), containsString(eventsURL));
-		assertThat(count+1, equalTo(countRowsInTable("Events")));
+		assertThat(count+1, equalTo(countRowsInTable("events")));
 	}
 	
 	@Test

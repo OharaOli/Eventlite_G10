@@ -48,7 +48,11 @@ public class VenueServiceImpl implements VenueService {
 	
 	@Override
 	public Optional<Venue> findVenueById(Long id) {
-		return venueRepository.findById(id);
+		Venue result = findOne(id);
+		if (result == null)
+			return null;
+		else
+			return Optional.of(result);
 	}
 
 	@Override

@@ -4,6 +4,8 @@
       layout:decorate="~{layouts/default}">
 <head>
   	<title>Venue Details</title>
+  	<meta name="_csrf" id="_csrf" th:content="${_csrf.token}"/>
+  	<meta name="_csrf_header" id="_csrf_header" th:content="${_csrf.headerName}"/>	
   	<style>
   		#VenueArea1 {
   			background-color: #F5F5F5;

@@ -24,14 +24,23 @@ public class Security extends WebSecurityConfigurerAdapter {
 
 	// List the mappings/methods for which no authorisation is required.
 	// By default we allow all GETs and full access to the H2 console.
-	private static final RequestMatcher[] NO_AUTH = { new AntPathRequestMatcher("/webjars/**", "GET"),
-			new AntPathRequestMatcher("/**", "GET"), new AntPathRequestMatcher("/h2-console/**"),
+	private static final RequestMatcher[] NO_AUTH = { 
+			new AntPathRequestMatcher("/webjars/**", "GET"),
+			new AntPathRequestMatcher("/**", "GET"), 
+			new AntPathRequestMatcher("/h2-console/**"),
 			new AntPathRequestMatcher("/events/tweet/**", "POST")};
 
-	private static final RequestMatcher[] ORGANISER_AUTH = {new AntPathRequestMatcher("/events/update/**", "POST"),
-			new AntPathRequestMatcher("/events/add", "GET"), new AntPathRequestMatcher("/events/add", "POST"),
-			new AntPathRequestMatcher("/events/update/**", "GET"), new AntPathRequestMatcher("/**", "DELETE")};
-
+	private static final RequestMatcher[] ORGANISER_AUTH = {
+			new AntPathRequestMatcher("/**", "DELETE"),
+			new AntPathRequestMatcher("/events/add", "GET"),
+			new AntPathRequestMatcher("/events/add", "POST"),
+			new AntPathRequestMatcher("/events/update/**", "POST"),
+			new AntPathRequestMatcher("/events/update/**", "GET"),
+			new AntPathRequestMatcher("/venues/add", "GET"),
+			new AntPathRequestMatcher("/venues/add", "POST"),
+			new AntPathRequestMatcher("/venues/update/**", "POST"),
+			new AntPathRequestMatcher("/venues/update/**", "GET")};
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// By default, all requests are authenticated except our specific list.
