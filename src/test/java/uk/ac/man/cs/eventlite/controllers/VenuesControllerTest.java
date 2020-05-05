@@ -1,5 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -8,8 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,10 +24,8 @@ import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -81,7 +79,62 @@ public class VenuesControllerTest {
         mvc = MockMvcBuilders.standaloneSetup(venuesController).apply(springSecurity(springSecurityFilterChain))
                 .build();
     }
- 
+ 	
+	@Test
+	public void getIndexWhenNoVenues() throws Exception {
+		//when(eventService.findAll()).thenReturn(Collections.<Event> emptyList());
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+
+		mvc.perform(get("/venues").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("venues/index")).andExpect(handler().methodName("getAllVenues"));
+
+		//verify(eventService).findAllPreviousEvents();
+		//verify(eventService).findAllFutureEvents();
+		verify(venueService).findAll();
+		verifyZeroInteractions(venue);
+//		verifyZeroInteractions(event);
+	}
+
+	@Test
+	public void getIndexWithVenues() throws Exception {
+		//when(eventService.findAll()).thenReturn(Collections.<Event> singletonList(event));
+		when(venueService.findAll()).thenReturn(Collections.<Venue> singletonList(venue));
+
+		mvc.perform(get("/venues").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("venues/index")).andExpect(handler().methodName("getAllVenues"));
+
+		//verify(eventService).findAll();
+		//verify(eventService).findAllPreviousEvents();
+		//verify(eventService).findAllFutureEvents();
+		verify(venueService).findAll();
+		//verifyZeroInteractions(event);
+		verifyZeroInteractions(venue);
+	}
+	
+	@Test
+	public void getSearchIndexWhenNoVenues() throws Exception {
+		String testSearch = new String("HHHHHHHH");
+		when(venueService.findSearchedBy(testSearch)).thenReturn(Collections.<Venue> emptyList());
+
+		mvc.perform(get("/venues/search?search=HHHHHHHH").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("venues/search")).andExpect(handler().methodName("getVenuesByName"));
+
+		verify(venueService).findSearchedBy(testSearch);
+		verifyZeroInteractions(venue);
+	}
+
+	@Test
+	public void getSearchIndexWithVenues() throws Exception {
+		String venueSearch = new String("Venue");
+		when(venueService.findSearchedBy(venueSearch)).thenReturn(Collections.<Venue> singletonList(venue));
+
+		mvc.perform(get("/venues/search?search=Venue").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("venues/search")).andExpect(handler().methodName("getVenuesByName"));
+
+		verify(venueService).findSearchedBy(venueSearch);
+		verifyZeroInteractions(venue);
+	}	
+   
     @Test
     public void getValidVenueDetails() throws Exception {
         Optional<Venue> testVenue = Optional.of(venue);
@@ -95,8 +148,8 @@ public class VenuesControllerTest {
         verify(venueService).findVenueById(id);
         verifyZeroInteractions(eventService);
         verifyZeroInteractions(event);
-    }
-   
+    } 
+	
 	@Test
 	public void deleteExistingVenue() throws Exception {
 		Long id = (long) 1 ;
@@ -168,76 +221,7 @@ public class VenuesControllerTest {
 		verify(venueService).findVenueById(id);
 		verifyZeroInteractions(venueService);
 	}
-	
-	@Test
-	public void getIndexWhenNoVenues() throws Exception {
-		//when(eventService.findAll()).thenReturn(Collections.<Event> emptyList());
-		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
 
-		mvc.perform(get("/venues").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("venues/index")).andExpect(handler().methodName("getAllVenues"));
-
-		//verify(eventService).findAllPreviousEvents();
-		//verify(eventService).findAllFutureEvents();
-		verify(venueService).findAll();
-		verifyZeroInteractions(venue);
-//		verifyZeroInteractions(event);
-	}
-
-	@Test
-	public void getIndexWithVenues() throws Exception {
-		//when(eventService.findAll()).thenReturn(Collections.<Event> singletonList(event));
-		when(venueService.findAll()).thenReturn(Collections.<Venue> singletonList(venue));
-
-		mvc.perform(get("/venues").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("venues/index")).andExpect(handler().methodName("getAllVenues"));
-
-		//verify(eventService).findAll();
-		//verify(eventService).findAllPreviousEvents();
-		//verify(eventService).findAllFutureEvents();
-		verify(venueService).findAll();
-		//verifyZeroInteractions(event);
-		verifyZeroInteractions(venue);
-	}
-	
-	@Test
-	public void getSearchIndexWhenNoVenues() throws Exception {
-		String testSearch = new String("HHHHHHHH");
-		when(venueService.findSearchedBy(testSearch)).thenReturn(Collections.<Venue> emptyList());
-
-		mvc.perform(get("/venues/search?search=HHHHHHHH").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("venues/search")).andExpect(handler().methodName("getVenuesByName"));
-
-		verify(venueService).findSearchedBy(testSearch);
-		verifyZeroInteractions(venue);
-	}
-
-	@Test
-	public void getSearchIndexWithVenues() throws Exception {
-		String venueSearch = new String("Venue");
-		when(venueService.findSearchedBy(venueSearch)).thenReturn(Collections.<Venue> singletonList(venue));
-
-		mvc.perform(get("/venues/search?search=Venue").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("venues/search")).andExpect(handler().methodName("getVenuesByName"));
-
-		verify(venueService).findSearchedBy(venueSearch);
-		verifyZeroInteractions(venue);
-	}	
-
-	@Test
-	public void updateVenueNoCsrf() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/venues").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-			.with(user("Organiser").roles(Security.ORGANISER_ROLE))
-			.param("id", "1").param("name", "test")
-			.param("address", "address")
-			.param("postcode", "postcode")
-			.param("capacity", "10")
-			.accept(MediaType.TEXT_HTML))
-			.andExpect(status().isForbidden());
-
-		verify(venueService, never()).save(venue);
-	}	
-		
 	@Test
 	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
 	public void updateVenueInvalid() throws Exception
@@ -252,7 +236,7 @@ public class VenuesControllerTest {
 			.sessionAttr("venue", venue)
 			.param("description", "TEST"))
 		.andExpect(status().isMethodNotAllowed());
-	}
+	}	
 	
 	@Test
 	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
@@ -269,6 +253,35 @@ public class VenuesControllerTest {
 				.sessionAttr("venue", venue)
 				.param("description", "TEST"))
 				.andExpect(status().isMethodNotAllowed());
+	}	
+	
+	@Test
+	public void updateVenueNoCsrf() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/venues").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			.with(user("Organiser").roles(Security.ORGANISER_ROLE))
+			.param("id", "1")
+			.param("name", "test")
+			.param("address", "address")
+			.param("postcode", "postcode")
+			.param("capacity", "10")
+			.accept(MediaType.TEXT_HTML))
+			.andExpect(status().isForbidden());
+
+		verify(venueService, never()).save(venue);
+	}	
+	
+	@Test
+	public void updateVenueNoAuth() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/events").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			.param("id", "1")
+			.param("name", "test")
+			.param("address", "address")
+			.param("postcode", "postcode")
+			.param("capacity", "10")
+			.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+			.andExpect(header().string("Location", endsWith("/sign-in")));
+
+		verify(venueService, never()).save(venue);
 	}
 	
 	@Test
@@ -318,7 +331,7 @@ public class VenuesControllerTest {
 	
 	@Test
 	@WithMockUser(username="Organiser", roles= {"ORGANISER"})
-	public void addEventNodata() throws Exception
+	public void addVenueNodata() throws Exception
 	{
 		mvc.perform(post("/venues/add").with(csrf())
 	            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
