@@ -34,20 +34,23 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		
 		if (venueService.count() == 0 || eventService.count() == 0) {
 			
+			long v_id = 1;
+			
 			Venue venueA = new Venue() ;
+			venueA.setId(v_id);
 			venueA.setName("Venue A");
+			venueA.setCapacity(100);
 			venueA.setAddress("23 Manchester Road");
 			venueA.setPostcode("E14 3BD");
-			venueA.setCapacity(100);
-			venueA.setDescription("This is a venue");
+			venueA.setDescription("This is Venue A.");
 			venueService.save(venueA);
 			
 			Venue venueB = new Venue() ;
 			venueB.setName("Venue B");
+			venueB.setCapacity(100);
 			venueB.setAddress("Highland Road");
 			venueB.setPostcode("S43 2EZ");
-			venueB.setCapacity(100);
-			venueA.setDescription("This is a venue");
+			venueB.setDescription("This is Venue B.");
 			venueService.save(venueB);
 			
 			Venue venueC = new Venue() ;
@@ -55,7 +58,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			venueC.setAddress("19 Acacia Avenue");
 			venueC.setPostcode("WA15 8QY");
 			venueC.setCapacity(10);
-			venueA.setDescription("This is a venue");
+			venueC.setDescription("This is Venue C.");
 			venueService.save(venueC);
 			
 			Venue venueD = new Venue() ;
@@ -129,34 +132,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent3.setDate(date5);
 			testEvent3.setTime(time1);
 			testEvent3.setDescription("Test Event 3...");
-			eventService.save(testEvent3);	
-			
-			// Test event 4.
-			Event testEvent4 = new Event();
-			testEvent4.setName("Test Event 4");
-			testEvent4.setVenue(venueC);
-			testEvent4.setDate(date6);
-			testEvent4.setTime(time1);
-			testEvent4.setDescription("Test Event 4...");
-			eventService.save(testEvent4);
-			
-			// Test event 5.
-			Event testEvent5 = new Event();
-			testEvent5.setName("Test Event 5");
-			testEvent5.setVenue(venueC);
-			testEvent5.setDate(date1);
-			testEvent5.setTime(time1);
-			testEvent5.setDescription("Test Event 5...");
-			eventService.save(testEvent5);		
-			
-			// Test event 6.
-			Event testEvent6 = new Event();
-			testEvent6.setName("Test Event 6");
-			testEvent6.setVenue(venueC);
-			testEvent6.setDate(date8);
-			testEvent6.setTime(time1);
-			testEvent6.setDescription("Test Event 6...");
-			eventService.save(testEvent6);	
+			eventService.save(testEvent3);
 			
 		}
 		else
