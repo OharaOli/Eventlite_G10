@@ -1,16 +1,14 @@
 package uk.ac.man.cs.eventlite.controllers;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
+import java.net.MalformedURLException;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,19 +23,34 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 
 import uk.ac.man.cs.eventlite.EventLite;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = EventLite.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class VenuesControllerApiIntegrationTest extends AbstractTransactionalJUnit4SpringContextTests {
+	
+	@LocalServerPort
+	private int port;
+	
+	private String baseUrl;
+	private String venueUrl;
+	
+	private static final String INDEX = "/1";
 
 	private HttpEntity<String> httpEntity;
 
-	@Autowired
-	private TestRestTemplate template;
+	// An anonymous user log in.
+	private final TestRestTemplate anon = new TestRestTemplate();
 
 	@BeforeEach
-	public void setup() {
+	public void setup() throws MalformedURLException {
+		this.baseUrl = "http://localhost:" + port + "/api/venues";
+		this.venueUrl = baseUrl + INDEX;
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
@@ -46,8 +59,18 @@ public class VenuesControllerApiIntegrationTest extends AbstractTransactionalJUn
 
 	@Test
 	public void testGetAllVenues() {
-		ResponseEntity<String> response = template.exchange("/api/venues", HttpMethod.GET, httpEntity, String.class);
-
+		get(baseUrl, "venues");
+	}
+	
+	@Test
+	public void testGetOneVenue() {
+		get(venueUrl, "Venue A");
+	}
+	
+	private void get(String url, String expectedBody) {
+		ResponseEntity<String> response = anon.exchange(url, HttpMethod.GET, httpEntity, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
+		assertThat(response.getBody(), containsString(expectedBody));
 	}
 }
